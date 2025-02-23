@@ -1,0 +1,43 @@
+﻿using HexHunt.Managers;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace HexHunt.Models.Characters
+{
+    public class BlueWitch : CharacterBase
+    {
+        private Texture2D _idleTexture;
+        private Texture2D _runTexture;
+        private Vector2 _scale = Vector2.One * 2; // scale texture by two times
+        private const string AssetDirectoryPath = "Characters/Blue Witch";
+
+        public BlueWitch(Vector2 position = default)
+        {
+            LoadTextures();
+
+            _animationManager.AddAnimationForRestPosition(new(_idleTexture, 1, 6, _defaultFrameRate, isVertical: true, scale: _scale));
+            _animationManager.AddAnimationForFrontMovePositions(new(_runTexture, 1, 8, _defaultFrameRate, isVertical: true, scale: _scale));
+            _animationManager.AddAnimationForBackMovePositions(new(_runTexture, 1, 8, _defaultFrameRate, isVertical: true, scale: _scale));
+
+            position.X -= 16;
+            position.Y -= 24;
+            _position = position;
+        }
+
+        public override void Update()
+        {
+            _animationManager.Update(InputManager.Direction);
+        }
+
+        public override void Draw()
+        {
+            _animationManager.Draw(_position, InputManager.Direction);
+        }
+
+        private void LoadTextures()
+        {
+            _idleTexture = Globals.Content.Load<Texture2D>($"{AssetDirectoryPath}/B_witch_idle");
+            _runTexture = Globals.Content.Load<Texture2D>($"{AssetDirectoryPath}/B_witch_run");
+        }
+    }
+}
