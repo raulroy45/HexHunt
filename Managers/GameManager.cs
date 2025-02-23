@@ -5,23 +5,26 @@ namespace HexHunt.Managers
 {
     public class GameManager
     {
-        private BlueWitch _witch;
+        private WitchManager _witchManager;
+        private WitchBase _witch; 
 
         public void Initialize() 
         {
             var viewport = Globals.Graphics.GraphicsDevice.Viewport;
-            _witch = new BlueWitch(new Vector2(viewport.Width / 2f, viewport.Height / 2f));
+            _witchManager = new WitchManager(new Vector2(viewport.Width / 2f, viewport.Height / 2f));
+
+            _witch = _witchManager.GetCurrentWitch();
         }
 
         public void Update() 
         {
             InputManager.Update();
-            _witch.Update();
+            _witchManager.Update();
         }
 
         public void Draw()
         {
-            _witch.Draw();
+            _witchManager.Draw();
         }
     }
 }

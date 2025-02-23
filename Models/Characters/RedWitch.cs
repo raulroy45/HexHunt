@@ -1,12 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace HexHunt.Models.Characters
 {
-    internal class RedWitch
+    public class RedWitch : WitchBase
     {
+        private Texture2D _idleTexture;
+        private Texture2D _runTexture;
+        private Vector2 _scale = Vector2.One * 2; // scale texture by two times
+        private const string AssetDirectoryPath = "Characters/Red Witch";
+
+        public RedWitch(Vector2 position = default)
+        {
+            LoadTextures();
+
+            _animationManager.AddAnimationForRestPosition(new(_idleTexture, 1, 6, _defaultFrameRate, isVertical: true, scale: _scale));
+            _animationManager.AddAnimationForFrontMovePositions(new(_runTexture, 1, 8, _defaultFrameRate, isVertical: true, scale: _scale));
+            _animationManager.AddAnimationForBackMovePositions(new(_runTexture, 1, 8, _defaultFrameRate, isVertical: true, scale: _scale));
+        }
+
+        private void LoadTextures()
+        {
+            _idleTexture = Globals.Content.Load<Texture2D>($"{AssetDirectoryPath}/R_witch_idle");
+            _runTexture = Globals.Content.Load<Texture2D>($"{AssetDirectoryPath}/R_witch_run");
+        }
     }
 }

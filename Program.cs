@@ -1,2 +1,2 @@
-﻿using var lostInSpace = new HexHunt.HexHunt();
-lostInSpace.Run();
+﻿using var hexHunt = new HexHunt.HexHunt();
+hexHunt.Run();
