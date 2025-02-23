@@ -1,3 +1,2 @@
-﻿
-using var game = new Lost_in_Space.Game1();
-game.Run();
+﻿using var lostInSpace = new HexHunt.HexHunt();
+lostInSpace.Run();

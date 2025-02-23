@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lost in Space", "Lost in Space.csproj", "{4950AF4F-F13D-4906-8AE9-0959BF5AEC4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HexHunt", "HexHunt.csproj", "{4950AF4F-F13D-4906-8AE9-0959BF5AEC4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
