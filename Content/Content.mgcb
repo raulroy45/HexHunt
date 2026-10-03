@@ -1,4 +1,3 @@
-
 #----------------------------- Global Properties ----------------------------#
 
 /outputDir:bin/$(Platform)
@@ -10,44 +9,7 @@
 
 #-------------------------------- References --------------------------------#
 
-
 #---------------------------------- Content ---------------------------------#
-
-#begin ../../../../OneDrive/Desktop/Gaming/Assets/Goblin/Attack3.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../OneDrive/Desktop/Gaming/Assets/Goblin/Attack3.png;Monsters/Attack3.png
-
-#begin ../../../../OneDrive/Desktop/Gaming/Assets/Mushroom/Attack3.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../OneDrive/Desktop/Gaming/Assets/Mushroom/Attack3.png;Monsters/Attack3.png
-
-#begin ../../../../OneDrive/Desktop/Gaming/Assets/Skeleton/Attack3.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../OneDrive/Desktop/Gaming/Assets/Skeleton/Attack3.png;Monsters/Attack3.png
 
 #begin Characters/Blue Witch/B_witch_attack.png
 /importer:TextureImporter
@@ -121,18 +83,6 @@
 /processorParam:TextureFormat=Color
 /build:Characters/Blue Witch/B_witch_take_damage.png
 
-#begin Characters/Blue Witch/B_witch.gif
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Characters/Blue Witch/B_witch.gif
-
 #begin Characters/Red Witch/R_witch_attack.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -156,18 +106,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Characters/Red Witch/R_witch_charge.png
-
-#begin Characters/Red Witch/R_witch_emj.gif
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Characters/Red Witch/R_witch_emj.gif
 
 #begin Characters/Red Witch/R_witch_idle.png
 /importer:TextureImporter
@@ -240,18 +178,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Characters/White Witch/W_witch_charge.png
-
-#begin Characters/White Witch/W_witch_emoji.gif
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Characters/White Witch/W_witch_emoji.gif
 
 #begin Characters/White Witch/W_witch_idle.png
 /importer:TextureImporter
