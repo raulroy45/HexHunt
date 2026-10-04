@@ -1,3 +1,4 @@
+
 #----------------------------- Global Properties ----------------------------#
 
 /outputDir:bin/$(Platform)
@@ -8,6 +9,7 @@
 /compress:False
 
 #-------------------------------- References --------------------------------#
+
 
 #---------------------------------- Content ---------------------------------#
 
@@ -21,9 +23,10 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Blue Witch/B_witch_attack.png
 
-#begin Characters/Blue Witch/B_witch_charge.png
+#begin Characters/Blue Witch/B_witch_Charge_Loop.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -33,7 +36,8 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Characters/Blue Witch/B_witch_charge.png
+/processorParam:Version=3.8.5.1
+/build:Characters/Blue Witch/B_witch_Charge_Loop.png
 
 #begin Characters/Blue Witch/B_witch_death.png
 /importer:TextureImporter
@@ -45,6 +49,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Blue Witch/B_witch_death.png
 
 #begin Characters/Blue Witch/B_witch_idle.png
@@ -57,6 +62,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Blue Witch/B_witch_idle.png
 
 #begin Characters/Blue Witch/B_witch_run.png
@@ -69,6 +75,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Blue Witch/B_witch_run.png
 
 #begin Characters/Blue Witch/B_witch_take_damage.png
@@ -81,6 +88,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Blue Witch/B_witch_take_damage.png
 
 #begin Characters/Red Witch/R_witch_attack.png
@@ -93,6 +101,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Red Witch/R_witch_attack.png
 
 #begin Characters/Red Witch/R_witch_charge.png
@@ -105,6 +114,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Red Witch/R_witch_charge.png
 
 #begin Characters/Red Witch/R_witch_idle.png
@@ -117,6 +127,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Red Witch/R_witch_idle.png
 
 #begin Characters/Red Witch/R_witch_run.png
@@ -129,6 +140,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Red Witch/R_witch_run.png
 
 #begin Characters/Red Witch/R_witch_take_damage.png
@@ -141,6 +153,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Red Witch/R_witch_take_damage.png
 
 #begin Characters/Red Witch/R_witch_take_death.png
@@ -153,6 +166,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/Red Witch/R_witch_take_death.png
 
 #begin Characters/White Witch/W_witch_attack.png
@@ -165,6 +179,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/White Witch/W_witch_attack.png
 
 #begin Characters/White Witch/W_witch_charge.png
@@ -177,6 +192,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/White Witch/W_witch_charge.png
 
 #begin Characters/White Witch/W_witch_idle.png
@@ -189,6 +205,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/White Witch/W_witch_idle.png
 
 #begin Characters/White Witch/W_witch_run.png
@@ -201,6 +218,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/White Witch/W_witch_run.png
 
 #begin Characters/White Witch/W_witch_take_damage.png
@@ -213,6 +231,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/White Witch/W_witch_take_damage.png
 
 #begin Characters/White Witch/W_witch_take_death.png
@@ -225,6 +244,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Characters/White Witch/W_witch_take_death.png
 
 #begin Monsters/Flying Eye/Attack3.png
@@ -237,6 +257,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Monsters/Flying Eye/Attack3.png
 
 #begin Monsters/Flying Eye/projectile_sprite.png
@@ -249,6 +270,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Monsters/Flying Eye/projectile_sprite.png
 
 #begin Monsters/Goblin/Attack3.png
@@ -261,6 +283,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Monsters/Goblin/Attack3.png
 
 #begin Monsters/Goblin/Bomb_sprite.png
@@ -273,6 +296,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Monsters/Goblin/Bomb_sprite.png
 
 #begin Monsters/Mushroom/Attack3.png
@@ -285,6 +309,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Monsters/Mushroom/Attack3.png
 
 #begin Monsters/Mushroom/Projectile_sprite.png
@@ -297,6 +322,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Monsters/Mushroom/Projectile_sprite.png
 
 #begin Monsters/Skeleton/Attack3.png
@@ -309,6 +335,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Monsters/Skeleton/Attack3.png
 
 #begin Monsters/Skeleton/Sword_sprite.png
@@ -321,5 +348,6 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
 /build:Monsters/Skeleton/Sword_sprite.png
 
