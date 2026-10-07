@@ -1,3 +1,4 @@
+using HexHunt.Characters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -75,8 +76,8 @@ public class Animation
         return _frameHeight;
     }
 
-    public Vector2 GetOrigin(Facing facing)
+    public Vector2 GetOrigin(CharacterFacing facing)
     {
-        return facing == Facing.Left ? new Vector2(_frameWidth - _origin.X, _origin.Y) : _origin;
+        return facing == CharacterFacing.Left ? new Vector2(_frameWidth - _origin.X, _origin.Y) : _origin;
     }
 }

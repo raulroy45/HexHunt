@@ -1,3 +1,4 @@
+using HexHunt.Characters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -41,10 +42,10 @@ public class AnimationPlayer
         _timerLeft = _currentAnimation.GetFrameDuration();
     }
 
-    public void Draw(SpriteBatch spriteBatch, Vector2 position, Facing facing, float scale)
+    public void Draw(SpriteBatch spriteBatch, Vector2 position, CharacterFacing facing, float scale)
     {
         var origin = _currentAnimation.GetOrigin(facing);
-        var effects = facing == Facing.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+        var effects = facing == CharacterFacing.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
         
         spriteBatch.Draw(
             _currentAnimation.GetTexture(),
@@ -58,10 +59,4 @@ public class AnimationPlayer
             0f
         );
     }
-}
-
-public enum Facing
-{
-    Left,
-    Right
 }
