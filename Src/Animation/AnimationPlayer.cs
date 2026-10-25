@@ -9,14 +9,14 @@ public class AnimationPlayer
     private Animation _currentAnimation;
     private int _currentFrameIndex;
     private float _timerLeft;
-    
+
     public bool IsFinished { get; private set; }
 
     public void Play(Animation animation)
     {
         if (_currentAnimation == animation)
             return;
-        
+
         _currentAnimation = animation;
         _currentFrameIndex = 0;
         _timerLeft = _currentAnimation.GetFrameDuration();
@@ -26,9 +26,9 @@ public class AnimationPlayer
     public void Update(float elapsedTime)
     {
         _timerLeft -= elapsedTime;
-        
+
         if (!(_timerLeft <= 0) || IsFinished) return;
-        
+
         if (_currentFrameIndex >= _currentAnimation.GetFrameCount() - 1)
         {
             if (_currentAnimation.IsLooping())
@@ -37,8 +37,10 @@ public class AnimationPlayer
                 IsFinished = true;
         }
         else
+        {
             _currentFrameIndex++;
-            
+        }
+
         _timerLeft = _currentAnimation.GetFrameDuration();
     }
 
@@ -46,7 +48,7 @@ public class AnimationPlayer
     {
         var origin = _currentAnimation.GetOrigin(entityFacing);
         var effects = entityFacing == EntityFacing.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        
+
         spriteBatch.Draw(
             _currentAnimation.GetTexture(),
             position,

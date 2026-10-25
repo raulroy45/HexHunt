@@ -7,14 +7,14 @@ namespace HexHunt.Content;
 public static class ArtCatalogue
 {
     private static readonly SheetArt BlueWitchBase = new(
-        Path: "",
-        FrameWidth: 111,
-        FrameHeight: 48,
-        Origin: new Vector2(26, 42),
-        IsLooping: true
+        "",
+        111,
+        48,
+        new Vector2(26, 42),
+        true
     );
 
-    public static readonly CharacterArt<WitchAction> BlueWitch =
+    public static readonly ArtSet<WitchAction> BlueWitch =
         new(new Dictionary<WitchAction, SheetArt>
         {
             { WitchAction.Idling, BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_idle" } },
@@ -25,12 +25,17 @@ public static class ArtCatalogue
             }
         });
 
-    public static readonly SheetArt AttackEffectIceSpike =
-        new(
-            Path: "Effects/Magic/B_witch_ice_spike",
-            FrameWidth: 19,
-            FrameHeight: 38,
-            Origin: new Vector2(4, 33),
-            IsLooping: false
-        );
+    public static readonly ArtSet<WitchEffect> WitchEffects =
+        new(new Dictionary<WitchEffect, SheetArt>
+        {
+            {
+                WitchEffect.IceSpike, new SheetArt(
+                    "Effects/Magic/B_witch_ice_spike",
+                    19,
+                    38,
+                    new Vector2(4, 33),
+                    false
+                )
+            }
+        });
 }

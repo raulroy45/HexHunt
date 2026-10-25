@@ -7,18 +7,18 @@ namespace HexHunt.Assets.Effects.Attack;
 public class AttackObject : IEntity
 {
     private readonly AnimationPlayer _animationPlayer;
-
+    
     private readonly Vector2 _position;
-    private readonly EntityFacing _facing;
+    private readonly Vector2 _direction;
 
     public AttackObject(
         Vector2 position,
-        EntityFacing facing,
+        Vector2 direction,
         Animation.Animation attackObjectAnimation
     )
     {
         _position = position;
-        _facing = facing;
+        _direction = direction;
         _animationPlayer = new AnimationPlayer();
         _animationPlayer.Play(attackObjectAnimation);
     }
@@ -33,8 +33,13 @@ public class AttackObject : IEntity
         _animationPlayer.Draw(
             spriteBatch,
             _position,
-            _facing,
+            GetFacingFromDirection(_direction),
             1.5f
         );
+    }
+
+    private static EntityFacing GetFacingFromDirection(Vector2 direction)
+    {
+        return direction.X >= 0 ? EntityFacing.Right : EntityFacing.Left;
     }
 }

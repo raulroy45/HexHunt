@@ -6,23 +6,14 @@ namespace HexHunt.Animation;
 
 public class Animation
 {
-    private readonly Texture2D _texture;
-    private readonly int _frameHeight;
-    private readonly int _frameWidth;
     private readonly int _frameCount;
     private readonly float _frameDuration;
+    private readonly int _frameHeight;
+    private readonly int _frameWidth;
     private readonly bool _isLooping;
     private readonly Vector2 _origin;
+    private readonly Texture2D _texture;
 
-    /// <summary>
-    /// Animation class for sprites
-    /// </summary>
-    /// <param name="texture"></param>
-    /// <param name="frameWidth"></param>
-    /// <param name="frameHeight"></param>
-    /// <param name="frameDuration"></param>
-    /// <param name="isLooping"></param>
-    /// <param name="origin"></param>
     public Animation(
         Texture2D texture,
         int frameWidth,
@@ -40,12 +31,12 @@ public class Animation
         _isLooping = isLooping;
         _origin = origin ?? Vector2.Zero;
     }
-    
+
     public Texture2D GetTexture()
     {
         return _texture;
     }
-    
+
     public float GetFrameDuration()
     {
         return _frameDuration;
