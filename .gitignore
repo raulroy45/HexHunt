@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Purchased art pack: licensed for use, not for redistribution.
+# Kept locally only (back it up privately).
+/Art/
+/Content/Characters/
+/Content/Monsters/
+/Content/Effects/
