@@ -14,16 +14,16 @@ public class Witch : IEntity
     private const float Speed = 90f;
     
     private readonly AnimationPlayer _animationPlayer;
-    private readonly CharacterAnimations<WitchAction> _characterAnimationses;
+    private readonly CharacterAnimations<WitchAction> _characterAnimations;
     
     private Vector2 _position;
     private WitchInput _input;
 
-    public Witch(Vector2 position, CharacterAnimations<WitchAction> characterAnimationses)
+    public Witch(Vector2 position, CharacterAnimations<WitchAction> characterAnimations)
     {
         _position = position;
         _animationPlayer = new AnimationPlayer();
-        _characterAnimationses = characterAnimationses;
+        _characterAnimations = characterAnimations;
         SetState(WitchAction.Idling);
     }
 
@@ -61,7 +61,7 @@ public class Witch : IEntity
     private void SetState(WitchAction action)
     {
         _witchAction = action;
-        _animationPlayer.Play(_characterAnimationses.Animations[_witchAction]);
+        _animationPlayer.Play(_characterAnimations.Animations[_witchAction]);
     }
     
     private void HandleInput(WitchInput input, float elapsedTime)
