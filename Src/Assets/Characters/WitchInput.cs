@@ -1,12 +1,10 @@
 using Microsoft.Xna.Framework;
 
-namespace HexHunt.Characters;
+namespace HexHunt.Assets.Characters;
 
-public class CharacterInput
+public struct WitchInput
 {
     public Vector2 Direction;
     
     public bool AttackButtonPressed;
-
-    public bool ChargeButtonPressed;
 }

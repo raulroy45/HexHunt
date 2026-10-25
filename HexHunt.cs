@@ -1,6 +1,8 @@
-﻿using HexHunt.Characters;
+﻿using System.Collections.Generic;
+using HexHunt.Assets;
+using HexHunt.Assets.Characters;
+using HexHunt.Content;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -12,38 +14,31 @@ namespace HexHunt
         private SpriteBatch _spriteBatch;
         private KeyboardState _previousKeyboardState;
         
-        private Witch _witch;
+        private const float FrameDuration = 0.1f;
 
+        private List<IEntity> _entities = [];
+        
+        private Witch _player;
+        
         public HexHunt()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            _witch = new Witch();
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-            _witch.Initialize(new Vector2(GraphicsDevice.Viewport.Width / 2f, GraphicsDevice.Viewport.Height / 2f));
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            var origin = new Vector2(26, 42);
-            var stateTextures = GetWitchTextures(Content);
-            _witch.Load(stateTextures, origin);
-        }
 
-        private static CharacterStateTextures GetWitchTextures(ContentManager content)
-        {
-            return new CharacterStateTextures
-            {
-                Idle = content.Load<Texture2D>("Characters/Blue Witch/B_witch_idle"),
-                Move = content.Load<Texture2D>("Characters/Blue Witch/B_witch_run"),
-                Attack = content.Load<Texture2D>("Characters/Blue Witch/B_witch_attack")
-            };
+            _player = new Witch(
+                new Vector2(GraphicsDevice.Viewport.Width / 2f, GraphicsDevice.Viewport.Height / 2f),
+                AnimationLoader.LoadCharacterAnimations<WitchAction>(
+                    Content,
+                    ArtCatalogue.BlueWitch,
+                    FrameDuration
+                )
+            );
         }
 
         protected override void Update(GameTime gameTime)
@@ -51,14 +46,15 @@ namespace HexHunt
             var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             var keyboardState = Keyboard.GetState();
 
-            var characterInput = new CharacterInput();
+            var characterInput = new WitchInput();
             
             if (WasJustPressed(keyboardState, _previousKeyboardState, Keys.J))
                 characterInput.AttackButtonPressed = true;
             
             characterInput.Direction = GetDirection(keyboardState);
             
-            _witch.Update(elapsedTime, characterInput);
+            _player.SetInput(characterInput);
+            _player.Update(elapsedTime);
             
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
                 Exit();
@@ -78,7 +74,7 @@ namespace HexHunt
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp); 
-            _witch.Draw(_spriteBatch);
+            _player.Draw(_spriteBatch);
             _spriteBatch.End();
             
             base.Draw(gameTime);

@@ -1,4 +1,4 @@
-using HexHunt.Characters;
+using HexHunt.Assets;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,10 +9,10 @@ public class Animation
     private readonly Texture2D _texture;
     private readonly int _frameHeight;
     private readonly int _frameWidth;
-    private int _frameCount;
-    private float _frameDuration;
-    private bool _isLooping;
-    private Vector2 _origin;
+    private readonly int _frameCount;
+    private readonly float _frameDuration;
+    private readonly bool _isLooping;
+    private readonly Vector2 _origin;
 
     /// <summary>
     /// Animation class for sprites
@@ -76,8 +76,8 @@ public class Animation
         return _frameHeight;
     }
 
-    public Vector2 GetOrigin(CharacterFacing facing)
+    public Vector2 GetOrigin(EntityFacing entityFacing)
     {
-        return facing == CharacterFacing.Left ? new Vector2(_frameWidth - _origin.X, _origin.Y) : _origin;
+        return entityFacing == EntityFacing.Left ? new Vector2(_frameWidth - _origin.X, _origin.Y) : _origin;
     }
 }
