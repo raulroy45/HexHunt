@@ -1,22 +1,25 @@
-using System;
-using System.Collections.Generic;
 using HexHunt.Animation;
-using HexHunt.Assets.Effects.Attack;
 using HexHunt.Content;
+using HexHunt.Entity.Effects.Attack;
+using HexHunt.Entity.Lifetime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace HexHunt.Assets.Characters;
+namespace HexHunt.Entity.Characters;
 
 public class Witch : IEntity
 {
     private const float Speed = 90f;
-
+    
+    // The Witch should never despawn
+    public ILifetime Lifetime { get; } = new InfiniteLifetime();
+    
     private readonly AnimationPlayer _animationPlayer;
     private readonly AnimationSet<WitchAction> _animationSet;
     private readonly AnimationSet<WitchEffect> _effectAnimations;
 
     private Vector2 _position;
+    private Vector2 _lastNonZeroDirection;
     private WitchInput _input;
     private WitchAction _witchAction = WitchAction.Idling;
     private EntityFacing _entityFacing = EntityFacing.Right;
@@ -31,13 +34,14 @@ public class Witch : IEntity
     )
     {
         _position = position;
+        _lastNonZeroDirection = Vector2.UnitX;
         _animationPlayer = new AnimationPlayer();
         _animationSet = animationSet;
         _effectAnimations = effectAnimations;
         _entitySpawner = entitySpawner;
         SetState(WitchAction.Idling);
     }
-
+    
     public void Update(float elapsedTime)
     {
         // If attacking, freeze the character so that the animation first finishes
@@ -77,6 +81,8 @@ public class Witch : IEntity
 
     private void HandleInput(WitchInput input, float elapsedTime)
     {
+        if (input.Direction != Vector2.Zero) _lastNonZeroDirection = input.Direction;
+        
         // Set state to either attacking, moving, or idling and if needed update position.
         if (input.AttackButtonPressed)
         {
@@ -104,10 +110,15 @@ public class Witch : IEntity
             _input.Direction.Normalize();
         
         _entitySpawner.Spawn(
-            new AttackObject(
-                _position + (_input.Direction * 25),
-                _input.Direction,
-                _effectAnimations.Animations[effect]
+            new AreaAttackLine(
+                _entitySpawner,
+                _position,
+                _lastNonZeroDirection,
+                _effectAnimations.Animations[effect],
+                4,
+                bufferBetweenAttackSeconds: 0.08f,
+                distanceBetweenAttacks: 25,
+                shouldDespawnAfterAnimation: true
             )
         );
     }

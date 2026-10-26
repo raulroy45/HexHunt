@@ -1,4 +1,4 @@
-using HexHunt.Assets;
+using HexHunt.Entity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,7 +6,7 @@ namespace HexHunt.Animation;
 
 public class AnimationPlayer
 {
-    private Animation _currentAnimation;
+    private Animation? _currentAnimation;
     private int _currentFrameIndex;
     private float _timerLeft;
 
@@ -25,8 +25,9 @@ public class AnimationPlayer
 
     public void Update(float elapsedTime)
     {
+        if (_currentAnimation == null) return;
+        
         _timerLeft -= elapsedTime;
-
         if (!(_timerLeft <= 0) || IsFinished) return;
 
         if (_currentFrameIndex >= _currentAnimation.GetFrameCount() - 1)
@@ -46,6 +47,8 @@ public class AnimationPlayer
 
     public void Draw(SpriteBatch spriteBatch, Vector2 position, EntityFacing entityFacing, float scale)
     {
+        if (_currentAnimation == null) return;
+        
         var origin = _currentAnimation.GetOrigin(entityFacing);
         var effects = entityFacing == EntityFacing.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 

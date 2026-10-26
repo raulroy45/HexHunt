@@ -1,4 +1,4 @@
-namespace HexHunt.Assets;
+namespace HexHunt.Entity;
 
 public enum EntityFacing
 {

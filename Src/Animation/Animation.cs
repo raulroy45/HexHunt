@@ -1,4 +1,4 @@
-using HexHunt.Assets;
+using HexHunt.Entity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

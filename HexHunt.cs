@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using HexHunt.Assets;
-using HexHunt.Assets.Characters;
+using HexHunt.Entity;
 using HexHunt.Content;
+using HexHunt.Entity.Characters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -67,7 +67,12 @@ public class HexHunt : Game, IEntitySpawner
 
         HandleQueuedEntities();
         foreach (var entity in _entities)
+        {
             entity.Update(elapsedTime);
+            
+            // Despawn entity in the next update
+            if (entity.Lifetime.IsExpired) Despawn(entity);
+        }
 
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             keyboardState.IsKeyDown(Keys.Escape))

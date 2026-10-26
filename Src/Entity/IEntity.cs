@@ -1,9 +1,12 @@
+using HexHunt.Entity.Lifetime;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace HexHunt.Assets;
+namespace HexHunt.Entity;
 
 public interface IEntity
 {
+    public ILifetime Lifetime { get; }
+    
     public void Update(float timeElapsed);
 
     public void Draw(SpriteBatch spriteBatch);

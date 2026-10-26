@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using HexHunt.Assets.Characters;
+using HexHunt.Entity.Characters;
 using Microsoft.Xna.Framework;
 
 namespace HexHunt.Content;

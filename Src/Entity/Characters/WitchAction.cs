@@ -1,4 +1,4 @@
-namespace HexHunt.Assets.Characters;
+namespace HexHunt.Entity.Characters;
 
 public enum WitchAction
 {
