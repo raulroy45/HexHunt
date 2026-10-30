@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using HexHunt.Entity;
 using HexHunt.Content;
 using HexHunt.Entity.Characters;
@@ -27,6 +28,10 @@ public class HexHunt : Game, IEntitySpawner
     private Witch _player;
     private KeyboardState _previousKeyboardState;
     private SpriteBatch _spriteBatch;
+    
+    // debugging
+    private Texture2D _debugBox;
+    private bool _isDebugMode = true;
 
     public HexHunt()
     {
@@ -72,6 +77,9 @@ public class HexHunt : Game, IEntitySpawner
             )
         );
         
+        _debugBox = new Texture2D(GraphicsDevice, 1, 1);
+        _debugBox.SetData([Color.White]);
+        
         _entities.Add(_player);
     }
 
@@ -84,6 +92,9 @@ public class HexHunt : Game, IEntitySpawner
 
         if (WasJustPressed(keyboardState, _previousKeyboardState, Keys.J))
             characterInput.AttackButtonPressed = true;
+        
+        if (WasJustPressed(keyboardState, _previousKeyboardState, Keys.F1))
+            _isDebugMode = !_isDebugMode;
 
         characterInput.Direction = GetDirection(keyboardState);
 
@@ -97,6 +108,7 @@ public class HexHunt : Game, IEntitySpawner
             // Despawn entity in the next update
             if (entity.Lifetime.IsExpired) Despawn(entity);
         }
+        HandleCollisions();
 
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             keyboardState.IsKeyDown(Keys.Escape))
@@ -105,6 +117,16 @@ public class HexHunt : Game, IEntitySpawner
         base.Update(gameTime);
 
         _previousKeyboardState = keyboardState;
+    }
+
+    private void HandleCollisions()
+    {
+        var damageSources = _entities.OfType<IDamageSource>();
+        var hittables = _entities.OfType<IHittable>().ToList();
+        
+        foreach (var entity in damageSources)
+            foreach (var hittable in hittables)
+                entity.DamageSource.TryHit(hittable);
     }
 
     private void HandleQueuedEntities()
@@ -128,6 +150,16 @@ public class HexHunt : Game, IEntitySpawner
         _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
         foreach (var entity in _entities)
             entity.Draw(_spriteBatch);
+        if (_isDebugMode)
+        {
+            var hittables = _entities.OfType<IHittable>();
+            var activeDamageSources = _entities.OfType<IDamageSource>().Where(x => x.DamageSource.IsActive);
+            foreach (var entity in hittables)
+                _spriteBatch.Draw(_debugBox, entity.Hitbox.HitboxRectangle, Color.Red * 0.4f);
+            foreach (var entity in activeDamageSources)
+                _spriteBatch.Draw(_debugBox, entity.DamageSource.Hitbox.HitboxRectangle, Color.Yellow * 0.4f);
+        }
+
         _spriteBatch.End();
 
         base.Draw(gameTime);

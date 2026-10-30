@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using HexHunt.Animations;
 using HexHunt.Entity.Lifetime;
 using Microsoft.Xna.Framework;
@@ -6,50 +6,44 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace HexHunt.Entity.Effects.Attack;
 
-public class AreaAttack : IEntity
+public class AreaAttack : IEntity, IDamageSource
 {
+    private const float Scale = 1.5f;
+    private const int StartDamageFrame = 4;
+    
     public ILifetime Lifetime { get; }
+    public DamageSource DamageSource { get; }
     
     private readonly AnimationPlayer _animationPlayer;
     
     private readonly Vector2 _position;
     private readonly Vector2 _direction;
 
-    private class AttackAreaLifetime(bool shouldDespawnAfterAnimation,
-        Func<bool> isAnimationFinished,
-        float delayExpirationSeconds = 0.2f
-    ) : ILifetime
-    {
-        public bool IsExpired { get; private set; } = false;
-        private float _delayExpirationSecondsLeft = delayExpirationSeconds;
-
-        public void Update(float elapsedTime)
-        {
-            if (!shouldDespawnAfterAnimation || !isAnimationFinished()) return;
-            
-            _delayExpirationSecondsLeft -= elapsedTime;
-            if (_delayExpirationSecondsLeft <= 0) IsExpired = true;
-        }
-    }
-
     public AreaAttack(
         Vector2 position,
         Vector2 direction,
         Animation attackObjectAnimation,
-        bool shouldDespawnAfterAnimation = true
+        Damage damage,
+        bool shouldDespawnAfterAnimation = true,
+        HashSet<IHittable>? hasHit = null
     )
     {
         _position = position;
         _direction = direction;
         _animationPlayer = new AnimationPlayer();
         _animationPlayer.Play(attackObjectAnimation);
-        Lifetime = new AttackAreaLifetime(shouldDespawnAfterAnimation, () => _animationPlayer.IsFinished);
+        Lifetime = new DelayedExpirationLifetime(() => shouldDespawnAfterAnimation && _animationPlayer.IsFinished);
+        DamageSource = new DamageSource(_position, Scale, 10, 10, damage, hasHit: hasHit);
     }
 
 
     public void Update(float elapsedTime)
     {
         _animationPlayer.Update(elapsedTime);
+        
+        if (_animationPlayer.CurrentFrameIndex >= StartDamageFrame)
+            DamageSource.Activate();
+        
         Lifetime.Update(elapsedTime);
     }
 
@@ -59,9 +53,10 @@ public class AreaAttack : IEntity
             spriteBatch,
             _position,
             GetFacingFromDirection(_direction),
-            1.5f
+            Scale
         );
     }
+
 
     private static EntityFacing GetFacingFromDirection(Vector2 direction)
     {

@@ -4,5 +4,7 @@ public enum MonsterAction
 {
     Idling,
     Running,
-    Attacking
+    Attacking,
+    TakeDamage,
+    Death
 }

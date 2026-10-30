@@ -55,7 +55,9 @@ public static class ArtCatalogue
         {
             { MonsterAction.Idling, RatBase with { Path = "Monsters/Rat/idle" } },
             { MonsterAction.Running, RatBase with { Path = "Monsters/Rat/run" } },
-            { MonsterAction.Attacking, RatBase with { Path = "Monsters/Rat/attack_bite", IsLooping = false} }
+            { MonsterAction.Attacking, RatBase with { Path = "Monsters/Rat/attack_bite", IsLooping = false } },
+            { MonsterAction.TakeDamage, RatBase with { Path = "Monsters/Rat/hurt", IsLooping = false } },
+            { MonsterAction.Death, RatBase with { Path = "Monsters/Rat/death", IsLooping = false } }
         }
     );
 }

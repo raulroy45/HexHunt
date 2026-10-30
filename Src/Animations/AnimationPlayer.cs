@@ -7,10 +7,10 @@ namespace HexHunt.Animations;
 public class AnimationPlayer
 {
     private Animation? _currentAnimation;
-    private int _currentFrameIndex;
     private float _timerLeft;
 
     public bool IsFinished { get; private set; }
+    public int CurrentFrameIndex { get; private set; }
 
     public void Play(Animation animation)
     {
@@ -18,7 +18,7 @@ public class AnimationPlayer
             return;
 
         _currentAnimation = animation;
-        _currentFrameIndex = 0;
+        CurrentFrameIndex = 0;
         _timerLeft = _currentAnimation.GetFrameDuration();
         IsFinished = false;
     }
@@ -30,16 +30,16 @@ public class AnimationPlayer
         _timerLeft -= elapsedTime;
         if (!(_timerLeft <= 0) || IsFinished) return;
 
-        if (_currentFrameIndex >= _currentAnimation.GetFrameCount() - 1)
+        if (CurrentFrameIndex >= _currentAnimation.GetFrameCount() - 1)
         {
             if (_currentAnimation.IsLooping())
-                _currentFrameIndex = 0;
+                CurrentFrameIndex = 0;
             else
                 IsFinished = true;
         }
         else
         {
-            _currentFrameIndex++;
+            CurrentFrameIndex++;
         }
 
         _timerLeft = _currentAnimation.GetFrameDuration();
@@ -55,7 +55,7 @@ public class AnimationPlayer
         spriteBatch.Draw(
             _currentAnimation.GetTexture(),
             position,
-            _currentAnimation.GetSourceRectangle(_currentFrameIndex),
+            _currentAnimation.GetSourceRectangle(CurrentFrameIndex),
             Color.White,
             0f,
             origin,

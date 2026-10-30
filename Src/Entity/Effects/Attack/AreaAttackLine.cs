@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using HexHunt.Animations;
 using HexHunt.Entity.Lifetime;
 using Microsoft.Xna.Framework;
@@ -19,7 +20,9 @@ public class AreaAttackLine : IEntity
     private readonly Vector2 _direction;
     private readonly Vector2 _position;
     private float _totalTimeElapsed = 0f;
-    private int _spawnedAttacks = 0;
+    private readonly List<AreaAttack> _spawnedAttacks = [];
+    private readonly HashSet<IHittable> _hasHit;
+    private readonly Damage _damage;
 
     public AreaAttackLine(
         IEntitySpawner entitySpawner,
@@ -27,6 +30,7 @@ public class AreaAttackLine : IEntity
         Vector2 direction,
         Animation areaAttackAnimation,
         int totalAttacks,
+        Damage damage,
         float bufferBetweenAttackSeconds = 0.1f,
         float distanceBetweenAttacksPixels = 25f,
         bool shouldDespawnAfterAnimation = true
@@ -48,6 +52,8 @@ public class AreaAttackLine : IEntity
         _shouldDespawnAfterAnimation = shouldDespawnAfterAnimation;
         
         Lifetime = new AttackLineLifetime(HaveAllAttacksSpawned);
+        _hasHit = new HashSet<IHittable>();
+        _damage = damage;
     }
     
     public void Update(float timeElapsed)
@@ -58,27 +64,30 @@ public class AreaAttackLine : IEntity
         
         _totalTimeElapsed += timeElapsed;
 
-        if (_totalTimeElapsed / _bufferBetweenAttackSeconds >= _spawnedAttacks)
+        if (_totalTimeElapsed / _bufferBetweenAttackSeconds >= _spawnedAttacks.Count)
         {
-            _entitySpawner.Spawn(CreateAreaAttack());
-            _spawnedAttacks++;
+            var entity = CreateAreaAttackEntity();
+            _entitySpawner.Spawn(entity);
+            _spawnedAttacks.Add(entity);
         }
     }
 
     private bool HaveAllAttacksSpawned()
     {
-        return _spawnedAttacks >= _totalAttacks;
+        return _spawnedAttacks.Count >= _totalAttacks;
     }
 
     public void Draw(SpriteBatch spriteBatch) { }
 
-    private AreaAttack CreateAreaAttack()
+    private AreaAttack CreateAreaAttackEntity()
     {
         return new AreaAttack(
-            _position + (_direction * _distanceBetweenAttacksPixels * (_spawnedAttacks + 1)),
+            _position + (_direction * _distanceBetweenAttacksPixels * (_spawnedAttacks.Count + 1)),
             _direction,
             _areaAttackAnimation,
-            shouldDespawnAfterAnimation: _shouldDespawnAfterAnimation
+            _damage,
+            shouldDespawnAfterAnimation: _shouldDespawnAfterAnimation,
+            _hasHit
         );
     }
 

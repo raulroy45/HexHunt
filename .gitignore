@@ -361,6 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# macOS Finder metadata
+.DS_Store
+
 # Purchased art pack: licensed for use, not for redistribution.
 # Kept locally only (back it up privately).
 /Art/

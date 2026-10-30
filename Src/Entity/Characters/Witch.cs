@@ -114,6 +114,16 @@ public class Witch : IEntity, IPositioned
                 _lastNonZeroDirection,
                 _effectAnimations.Animations[effect],
                 4,
+                new Damage
+                {
+                    DamageAmount = 5, 
+                    Knockback = new Knockback
+                    {
+                        Direction = _lastNonZeroDirection,
+                        Distance = 100,
+                        Duration = 0.15f
+                    }
+                },
                 bufferBetweenAttackSeconds: 0.08f,
                 distanceBetweenAttacksPixels: 25,
                 shouldDespawnAfterAnimation: true
