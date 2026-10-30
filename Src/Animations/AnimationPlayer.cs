@@ -2,7 +2,7 @@ using HexHunt.Entity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace HexHunt.Animation;
+namespace HexHunt.Animations;
 
 public class AnimationPlayer
 {

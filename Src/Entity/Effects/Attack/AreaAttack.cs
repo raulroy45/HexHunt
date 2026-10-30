@@ -1,5 +1,5 @@
 using System;
-using HexHunt.Animation;
+using HexHunt.Animations;
 using HexHunt.Entity.Lifetime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,7 +35,7 @@ public class AreaAttack : IEntity
     public AreaAttack(
         Vector2 position,
         Vector2 direction,
-        Animation.Animation attackObjectAnimation,
+        Animation attackObjectAnimation,
         bool shouldDespawnAfterAnimation = true
     )
     {

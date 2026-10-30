@@ -12,9 +12,9 @@ public class HexHunt : Game, IEntitySpawner
 {
     private const float FrameDuration = 0.1f;
 
-    private List<IEntity> _entities = [];
-    private List<IEntity> _queuedSpawnEntities = [];
-    private List<IEntity> _queuedDespawnEntities = [];
+    private readonly List<IEntity> _entities = [];
+    private readonly List<IEntity> _queuedSpawnEntities = [];
+    private readonly List<IEntity> _queuedDespawnEntities = [];
 
     private GraphicsDeviceManager _graphics;
 

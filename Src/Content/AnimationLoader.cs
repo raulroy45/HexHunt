@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using HexHunt.Animations;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace HexHunt.Content;
 
-public record AnimationSet<TKey>(IReadOnlyDictionary<TKey, Animation.Animation> Animations)
+public record AnimationSet<TKey>(IReadOnlyDictionary<TKey, Animation> Animations)
     where TKey : struct, Enum;
 
 public static class AnimationLoader
@@ -16,7 +17,7 @@ public static class AnimationLoader
         float frameDuration
     ) where TKey : struct, Enum
     {
-        var animationSet = new Dictionary<TKey, Animation.Animation>();
+        var animationSet = new Dictionary<TKey, Animation>();
         foreach (var (action, sheet) in artSet.Sheets)
             animationSet.Add(
                 action,
@@ -25,9 +26,9 @@ public static class AnimationLoader
         return new AnimationSet<TKey>(animationSet);
     }
 
-    public static Animation.Animation LoadAnimation(ContentManager content, SheetArt sheet, float frameDuration)
+    public static Animation LoadAnimation(ContentManager content, SheetArt sheet, float frameDuration)
     {
-        return new Animation.Animation(
+        return new Animation(
             content.Load<Texture2D>(sheet.Path),
             sheet.FrameWidth,
             sheet.FrameHeight,

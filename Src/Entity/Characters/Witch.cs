@@ -1,4 +1,4 @@
-using HexHunt.Animation;
+using HexHunt.Animations;
 using HexHunt.Content;
 using HexHunt.Entity.Effects.Attack;
 using HexHunt.Entity.Lifetime;
@@ -87,7 +87,7 @@ public class Witch : IEntity
         if (input.AttackButtonPressed)
         {
             SetState(WitchAction.Attacking);
-            SpawnObject(WitchEffect.IceSpike);
+            SpawnAreaAttackLine(WitchEffect.IceSpike);
         }
         else
         {
@@ -104,11 +104,8 @@ public class Witch : IEntity
         };
     }
 
-    private void SpawnObject(WitchEffect effect)
+    private void SpawnAreaAttackLine(WitchEffect effect)
     {
-        if (_input.Direction != Vector2.Zero)
-            _input.Direction.Normalize();
-        
         _entitySpawner.Spawn(
             new AreaAttackLine(
                 _entitySpawner,
@@ -117,7 +114,7 @@ public class Witch : IEntity
                 _effectAnimations.Animations[effect],
                 4,
                 bufferBetweenAttackSeconds: 0.08f,
-                distanceBetweenAttacks: 25,
+                distanceBetweenAttacksPixels: 25,
                 shouldDespawnAfterAnimation: true
             )
         );

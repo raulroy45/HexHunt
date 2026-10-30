@@ -26,7 +26,7 @@
 /processorParam:Version=3.8.5.1
 /build:Characters/Blue Witch/B_witch_attack.png
 
-#begin Characters/Blue Witch/B_witch_Charge_Loop.png
+#begin Characters/Blue Witch/B_witch_charge_loop.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -37,7 +37,7 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
-/build:Characters/Blue Witch/B_witch_Charge_Loop.png
+/build:Characters/Blue Witch/B_witch_charge_loop.png
 
 #begin Characters/Blue Witch/B_witch_death.png
 /importer:TextureImporter
@@ -117,6 +117,19 @@
 /processorParam:Version=3.8.5.1
 /build:Characters/Red Witch/R_witch_charge.png
 
+#begin Characters/Red Witch/R_witch_death.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
+/build:Characters/Red Witch/R_witch_death.png
+
 #begin Characters/Red Witch/R_witch_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -156,19 +169,6 @@
 /processorParam:Version=3.8.5.1
 /build:Characters/Red Witch/R_witch_take_damage.png
 
-#begin Characters/Red Witch/R_witch_take_death.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/processorParam:Version=3.8.5.1
-/build:Characters/Red Witch/R_witch_take_death.png
-
 #begin Characters/White Witch/W_witch_attack.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -194,6 +194,19 @@
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
 /build:Characters/White Witch/W_witch_charge.png
+
+#begin Characters/White Witch/W_witch_death.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.5.1
+/build:Characters/White Witch/W_witch_death.png
 
 #begin Characters/White Witch/W_witch_idle.png
 /importer:TextureImporter
@@ -234,19 +247,6 @@
 /processorParam:Version=3.8.5.1
 /build:Characters/White Witch/W_witch_take_damage.png
 
-#begin Characters/White Witch/W_witch_take_death.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/processorParam:Version=3.8.5.1
-/build:Characters/White Witch/W_witch_take_death.png
-
 #begin Effects/Magic/B_witch_ice_spike.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -260,7 +260,7 @@
 /processorParam:Version=3.8.5.1
 /build:Effects/Magic/B_witch_ice_spike.png
 
-#begin Monsters/Flying Eye/Attack3.png
+#begin Monsters/Flying Eye/attack_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -271,9 +271,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
-/build:Monsters/Flying Eye/Attack3.png
+/build:Monsters/Flying Eye/attack_3.png
 
-#begin Monsters/Flying Eye/projectile_sprite.png
+#begin Monsters/Flying Eye/projectile.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -284,9 +284,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
-/build:Monsters/Flying Eye/projectile_sprite.png
+/build:Monsters/Flying Eye/projectile.png
 
-#begin Monsters/Goblin/Attack3.png
+#begin Monsters/Goblin/attack_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -297,9 +297,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
-/build:Monsters/Goblin/Attack3.png
+/build:Monsters/Goblin/attack_3.png
 
-#begin Monsters/Goblin/Bomb_sprite.png
+#begin Monsters/Goblin/bomb.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -310,9 +310,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
-/build:Monsters/Goblin/Bomb_sprite.png
+/build:Monsters/Goblin/bomb.png
 
-#begin Monsters/Mushroom/Attack3.png
+#begin Monsters/Mushroom/attack_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -323,9 +323,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
-/build:Monsters/Mushroom/Attack3.png
+/build:Monsters/Mushroom/attack_3.png
 
-#begin Monsters/Mushroom/Projectile_sprite.png
+#begin Monsters/Mushroom/projectile.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -336,9 +336,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
-/build:Monsters/Mushroom/Projectile_sprite.png
+/build:Monsters/Mushroom/projectile.png
 
-#begin Monsters/Skeleton/Attack3.png
+#begin Monsters/Skeleton/attack_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -349,9 +349,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
-/build:Monsters/Skeleton/Attack3.png
+/build:Monsters/Skeleton/attack_3.png
 
-#begin Monsters/Skeleton/Sword_sprite.png
+#begin Monsters/Skeleton/sword.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -362,5 +362,5 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.5.1
-/build:Monsters/Skeleton/Sword_sprite.png
+/build:Monsters/Skeleton/sword.png
 

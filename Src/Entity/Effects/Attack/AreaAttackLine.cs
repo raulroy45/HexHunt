@@ -1,4 +1,5 @@
 using System;
+using HexHunt.Animations;
 using HexHunt.Entity.Lifetime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,9 +13,9 @@ public class AreaAttackLine : IEntity
     private readonly IEntitySpawner _entitySpawner;
     private readonly int _totalAttacks;
     private readonly float _bufferBetweenAttackSeconds;
-    private readonly float _distanceBetweenAttacks;
+    private readonly float _distanceBetweenAttacksPixels;
     private readonly bool _shouldDespawnAfterAnimation;
-    private readonly Animation.Animation _areaAttackAnimation;
+    private readonly Animation _areaAttackAnimation;
     private readonly Vector2 _direction;
     private readonly Vector2 _position;
     private float _totalTimeElapsed = 0f;
@@ -24,10 +25,10 @@ public class AreaAttackLine : IEntity
         IEntitySpawner entitySpawner,
         Vector2 position,
         Vector2 direction,
-        Animation.Animation areaAttackAnimation,
+        Animation areaAttackAnimation,
         int totalAttacks,
         float bufferBetweenAttackSeconds = 0.1f,
-        float distanceBetweenAttacks = 0.25f,
+        float distanceBetweenAttacksPixels = 25f,
         bool shouldDespawnAfterAnimation = true
     )
     {
@@ -43,25 +44,28 @@ public class AreaAttackLine : IEntity
             : throw new ArgumentException("Total number of attacks cannot be less than or equal to 0");
         
         _bufferBetweenAttackSeconds = bufferBetweenAttackSeconds;
-        _distanceBetweenAttacks = distanceBetweenAttacks;
+        _distanceBetweenAttacksPixels = distanceBetweenAttacksPixels;
         _shouldDespawnAfterAnimation = shouldDespawnAfterAnimation;
         
-        Lifetime = new AttackLineLifetime(HaveAllAttacksFinished);
+        Lifetime = new AttackLineLifetime(HaveAllAttacksSpawned);
     }
     
     public void Update(float timeElapsed)
     {
         Lifetime.Update(timeElapsed);
 
-        if (HaveAllAttacksFinished()) return;
+        if (HaveAllAttacksSpawned()) return;
         
         _totalTimeElapsed += timeElapsed;
-        
-        if (_spawnedAttacks <= 0 || _totalTimeElapsed / _bufferBetweenAttackSeconds >= _spawnedAttacks)
+
+        if (_totalTimeElapsed / _bufferBetweenAttackSeconds >= _spawnedAttacks)
+        {
             _entitySpawner.Spawn(CreateAreaAttack());
+            _spawnedAttacks++;
+        }
     }
 
-    private bool HaveAllAttacksFinished()
+    private bool HaveAllAttacksSpawned()
     {
         return _spawnedAttacks >= _totalAttacks;
     }
@@ -71,7 +75,7 @@ public class AreaAttackLine : IEntity
     private AreaAttack CreateAreaAttack()
     {
         return new AreaAttack(
-            _position + (_direction * _distanceBetweenAttacks * ++_spawnedAttacks),
+            _position + (_direction * _distanceBetweenAttacksPixels * (_spawnedAttacks + 1)),
             _direction,
             _areaAttackAnimation,
             shouldDespawnAfterAnimation: _shouldDespawnAfterAnimation
