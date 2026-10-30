@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HexHunt.Entity;
 using HexHunt.Content;
 using HexHunt.Entity.Characters;
+using HexHunt.Entity.Monsters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,6 +13,10 @@ namespace HexHunt;
 public class HexHunt : Game, IEntitySpawner
 {
     private const float FrameDuration = 0.1f;
+    private int _boundaryMinX;
+    private int _boundaryMaxX;
+    private int _boundaryMinY;
+    private int _boundaryMaxY;
 
     private readonly List<IEntity> _entities = [];
     private readonly List<IEntity> _queuedSpawnEntities = [];
@@ -27,6 +33,16 @@ public class HexHunt : Game, IEntitySpawner
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+    }
+
+    protected override void Initialize()
+    {
+        _boundaryMinX = GraphicsDevice.Viewport.Bounds.Left;
+        _boundaryMaxX = GraphicsDevice.Viewport.Bounds.Right;
+        _boundaryMinY = GraphicsDevice.Viewport.Bounds.Top;
+        _boundaryMaxY = GraphicsDevice.Viewport.Bounds.Bottom;
+        
+        base.Initialize();
     }
 
     protected override void LoadContent()
@@ -46,6 +62,14 @@ public class HexHunt : Game, IEntitySpawner
                 FrameDuration
             ),
             this // Give reference to this Game's IEntitySpawner
+        );
+
+        SpawnMonsters(
+            AnimationLoader.LoadAnimations(
+                Content,
+                ArtCatalogue.Rat,
+                FrameDuration
+            )
         );
         
         _entities.Add(_player);
@@ -128,6 +152,16 @@ public class HexHunt : Game, IEntitySpawner
             direction.Normalize();
 
         return direction;
+    }
+    
+    private void SpawnMonsters(AnimationSet<MonsterAction> monsterAnimation)
+    {
+        var rand = new Random();
+        var randomPosition = new Vector2(
+            _boundaryMinX + (float)rand.NextDouble() * (_boundaryMaxX - _boundaryMinX),
+            _boundaryMinY + (float)rand.NextDouble() * (_boundaryMaxY - _boundaryMinY)
+        );
+        Spawn(new Rat(randomPosition, monsterAnimation, _player));
     }
 
     public void Spawn(IEntity entity)

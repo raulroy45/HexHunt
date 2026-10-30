@@ -7,18 +7,19 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace HexHunt.Entity.Characters;
 
-public class Witch : IEntity
+public class Witch : IEntity, IPositioned
 {
     private const float Speed = 90f;
     
     // The Witch should never despawn
     public ILifetime Lifetime { get; } = new InfiniteLifetime();
     
+    public Vector2 Position { get; private set; }
+    
     private readonly AnimationPlayer _animationPlayer;
     private readonly AnimationSet<WitchAction> _animationSet;
     private readonly AnimationSet<WitchEffect> _effectAnimations;
 
-    private Vector2 _position;
     private Vector2 _lastNonZeroDirection;
     private WitchInput _input;
     private WitchAction _witchAction = WitchAction.Idling;
@@ -33,7 +34,7 @@ public class Witch : IEntity
         IEntitySpawner entitySpawner
     )
     {
-        _position = position;
+        Position = position;
         _lastNonZeroDirection = Vector2.UnitX;
         _animationPlayer = new AnimationPlayer();
         _animationSet = animationSet;
@@ -62,7 +63,7 @@ public class Witch : IEntity
     {
         _animationPlayer.Draw(
             spriteBatch,
-            _position,
+            Position,
             _entityFacing,
             1.5f
         );
@@ -91,7 +92,7 @@ public class Witch : IEntity
         }
         else
         {
-            _position += input.Direction * Speed * elapsedTime;
+            Position += input.Direction * Speed * elapsedTime;
             SetState(input.Direction != Vector2.Zero ? WitchAction.Moving : WitchAction.Idling);
         }
 
@@ -109,7 +110,7 @@ public class Witch : IEntity
         _entitySpawner.Spawn(
             new AreaAttackLine(
                 _entitySpawner,
-                _position,
+                Position,
                 _lastNonZeroDirection,
                 _effectAnimations.Animations[effect],
                 4,
