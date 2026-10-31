@@ -4,5 +4,7 @@ public enum WitchAction
 {
     Idling,
     Moving,
-    Attacking
+    Attacking,
+    TakeDamage,
+    Death
 }

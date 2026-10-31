@@ -23,6 +23,14 @@ public static class ArtCatalogue
             {
                 WitchAction.Attacking,
                 BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_attack", IsLooping = false }
+            },
+            {
+                WitchAction.TakeDamage,
+                BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_take_damage", IsLooping = false }
+            },
+            {
+                WitchAction.Death,
+                BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_death", IsLooping = false }
             }
         }
     );

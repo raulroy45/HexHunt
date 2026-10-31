@@ -3,31 +3,23 @@ using Microsoft.Xna.Framework;
 
 namespace HexHunt.Entity;
 
-public class DamageSource
+public class DamageSource(
+    Vector2 position,
+    float scale,
+    float width,
+    float height,
+    Damage damage,
+    Team team,
+    bool isActive = false,
+    HashSet<IHittable>? hasHit = null)
 {
-    public readonly Hitbox.Hitbox Hitbox;
-    public bool IsActive { get; private set; }
+    public readonly Hitbox.Hitbox Hitbox = new(position, scale, width, height);
+    public Team Team { get; } = team;
+    public bool IsActive { get; private set; } = isActive;
     public void Activate() => IsActive = true;
     public void Deactivate() => IsActive = false;
     
-    private HashSet<IHittable> _hasHit;
-    private readonly Damage _damage;
-
-    public DamageSource(
-        Vector2 position, 
-        float scale, 
-        float width, 
-        float height, 
-        Damage damage,
-        bool isActive = false,
-        HashSet<IHittable>? hasHit = null
-    )
-    {
-        Hitbox = new Hitbox.Hitbox(position, scale, width, height);
-        _hasHit = hasHit ?? new HashSet<IHittable>();
-        _damage = damage;
-        IsActive = isActive;
-    }
+    private readonly HashSet<IHittable> _hasHit = hasHit ?? [];
 
     public void Update(Vector2 position)
     {
@@ -39,9 +31,14 @@ public class DamageSource
         if (!IsActive)  return false;
         if (_hasHit.Contains(hittable)) return false;
         if (!Hitbox.IsHit(hittable.Hitbox)) return false;
-        if (!hittable.OnHit(_damage)) return false;
+        if (!hittable.OnHit(damage)) return false;
         
         _hasHit.Add(hittable);
         return true;
+    }
+
+    public void ClearEarlierHits()
+    {
+        _hasHit.Clear();
     }
 }

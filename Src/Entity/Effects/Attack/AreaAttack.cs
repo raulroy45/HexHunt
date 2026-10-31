@@ -24,6 +24,7 @@ public class AreaAttack : IEntity, IDamageSource
         Vector2 direction,
         Animation attackObjectAnimation,
         Damage damage,
+        Team team,
         bool shouldDespawnAfterAnimation = true,
         HashSet<IHittable>? hasHit = null
     )
@@ -33,7 +34,7 @@ public class AreaAttack : IEntity, IDamageSource
         _animationPlayer = new AnimationPlayer();
         _animationPlayer.Play(attackObjectAnimation);
         Lifetime = new DelayedExpirationLifetime(() => shouldDespawnAfterAnimation && _animationPlayer.IsFinished);
-        DamageSource = new DamageSource(_position, Scale, 10, 10, damage, hasHit: hasHit);
+        DamageSource = new DamageSource(_position, Scale, 10, 10, damage, team, hasHit: hasHit);
     }
 
 

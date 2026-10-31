@@ -23,6 +23,7 @@ public class AreaAttackLine : IEntity
     private readonly List<AreaAttack> _spawnedAttacks = [];
     private readonly HashSet<IHittable> _hasHit;
     private readonly Damage _damage;
+    private readonly Team _team;
 
     public AreaAttackLine(
         IEntitySpawner entitySpawner,
@@ -31,6 +32,7 @@ public class AreaAttackLine : IEntity
         Animation areaAttackAnimation,
         int totalAttacks,
         Damage damage,
+        Team team,
         float bufferBetweenAttackSeconds = 0.1f,
         float distanceBetweenAttacksPixels = 25f,
         bool shouldDespawnAfterAnimation = true
@@ -54,6 +56,7 @@ public class AreaAttackLine : IEntity
         Lifetime = new AttackLineLifetime(HaveAllAttacksSpawned);
         _hasHit = new HashSet<IHittable>();
         _damage = damage;
+        _team = team;
     }
     
     public void Update(float timeElapsed)
@@ -86,6 +89,7 @@ public class AreaAttackLine : IEntity
             _direction,
             _areaAttackAnimation,
             _damage,
+            _team,
             shouldDespawnAfterAnimation: _shouldDespawnAfterAnimation,
             _hasHit
         );

@@ -31,7 +31,7 @@ public class HexHunt : Game, IEntitySpawner
     
     // debugging
     private Texture2D _debugBox;
-    private bool _isDebugMode = true;
+    private bool _isDebugMode = false;
 
     public HexHunt()
     {
@@ -111,11 +111,10 @@ public class HexHunt : Game, IEntitySpawner
         HandleCollisions();
 
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            keyboardState.IsKeyDown(Keys.Escape))
+            keyboardState.IsKeyDown(Keys.Escape) || _player.Lifetime.IsExpired)
             Exit();
 
         base.Update(gameTime);
-
         _previousKeyboardState = keyboardState;
     }
 
@@ -125,7 +124,7 @@ public class HexHunt : Game, IEntitySpawner
         var hittables = _entities.OfType<IHittable>().ToList();
         
         foreach (var entity in damageSources)
-            foreach (var hittable in hittables)
+            foreach (var hittable in hittables.Where(x => x.Team != entity.DamageSource.Team))
                 entity.DamageSource.TryHit(hittable);
     }
 

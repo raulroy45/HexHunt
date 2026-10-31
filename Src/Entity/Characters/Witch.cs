@@ -7,14 +7,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace HexHunt.Entity.Characters;
 
-public class Witch : IEntity, IPositioned
+public class Witch : IEntity, IPositioned, IHittable
 {
     private const float Speed = 90f;
-    
+    public Hitbox.Hitbox Hitbox { get; }
+    public Team Team { get; init; } = Team.Friend;
+
     // The Witch should never despawn
-    public ILifetime Lifetime { get; } = new InfiniteLifetime();
-    
+    public ILifetime Lifetime { get; }
     public Vector2 Position { get; private set; }
+
+    private readonly HitPoints _hitPoints = new(20);
     
     private readonly AnimationPlayer _animationPlayer;
     private readonly AnimationSet<WitchAction> _animationSet;
@@ -26,6 +29,7 @@ public class Witch : IEntity, IPositioned
     private EntityFacing _entityFacing = EntityFacing.Right;
 
     private readonly IEntitySpawner _entitySpawner;
+    private const float Scale = 1.5f;
 
     public Witch(
         Vector2 position,
@@ -40,13 +44,20 @@ public class Witch : IEntity, IPositioned
         _animationSet = animationSet;
         _effectAnimations = effectAnimations;
         _entitySpawner = entitySpawner;
+        Hitbox = new Hitbox.Hitbox(Position, Scale, 2, 2);
+        Lifetime = new DelayedExpirationLifetime(
+            () => _witchAction == WitchAction.Death && _animationPlayer.IsFinished,
+            2
+        );
+
         SetState(WitchAction.Idling);
     }
     
     public void Update(float elapsedTime)
     {
+        if (_witchAction == WitchAction.Death) { }
         // If attacking, freeze the character so that the animation first finishes
-        if (_witchAction == WitchAction.Attacking)
+        else if (_witchAction is WitchAction.Attacking or WitchAction.TakeDamage)
         {
             if (_animationPlayer.IsFinished)
                 SetState(WitchAction.Idling);
@@ -57,6 +68,8 @@ public class Witch : IEntity, IPositioned
         }
 
         _animationPlayer.Update(elapsedTime);
+        Hitbox.Update(Position);
+        Lifetime.Update(elapsedTime);
     }
 
     public void Draw(SpriteBatch spriteBatch)
@@ -65,13 +78,23 @@ public class Witch : IEntity, IPositioned
             spriteBatch,
             Position,
             _entityFacing,
-            1.5f
+            Scale
         );
     }
 
     public void SetInput(WitchInput input)
     {
         _input = input;
+    }
+    
+    public bool OnHit(Damage damage)
+    {
+        if (_hitPoints.IsDead) return false;
+        
+        _hitPoints.TakeDamage(damage.DamageAmount);
+        SetState(_hitPoints.IsDead ? WitchAction.Death : WitchAction.TakeDamage);
+        
+        return true;
     }
 
     private void SetState(WitchAction action)
@@ -124,6 +147,7 @@ public class Witch : IEntity, IPositioned
                         Duration = 0.15f
                     }
                 },
+                team: Team.Friend,
                 bufferBetweenAttackSeconds: 0.08f,
                 distanceBetweenAttacksPixels: 25,
                 shouldDespawnAfterAnimation: true
