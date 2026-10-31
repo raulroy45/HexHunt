@@ -29,6 +29,7 @@ public class DamageSource(
     public bool TryHit(IHittable hittable)
     {
         if (!IsActive)  return false;
+        if (hittable.Team == Team) return false;
         if (_hasHit.Contains(hittable)) return false;
         if (!Hitbox.IsHit(hittable.Hitbox)) return false;
         if (!hittable.OnHit(damage)) return false;

@@ -7,13 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace HexHunt.Entity.Characters;
 
-public class Witch : IEntity, IPositioned, IHittable
+public class Witch : IEntity, IHittable
 {
-    private const float Speed = 90f;
+    private const float Speed = 45f;
     public Hitbox.Hitbox Hitbox { get; }
-    public Team Team { get; init; } = Team.Friend;
-
-    // The Witch should never despawn
+    public Team Team => Team.Friend;
     public ILifetime Lifetime { get; }
     public Vector2 Position { get; private set; }
 
@@ -29,7 +27,7 @@ public class Witch : IEntity, IPositioned, IHittable
     private EntityFacing _entityFacing = EntityFacing.Right;
 
     private readonly IEntitySpawner _entitySpawner;
-    private const float Scale = 1.5f;
+    private const float Scale = 1f;
 
     public Witch(
         Vector2 position,
@@ -56,7 +54,7 @@ public class Witch : IEntity, IPositioned, IHittable
     public void Update(float elapsedTime)
     {
         if (_witchAction == WitchAction.Death) { }
-        // If attacking, freeze the character so that the animation first finishes
+        // If attacking or taking damage, freeze the character so that the animation first finishes
         else if (_witchAction is WitchAction.Attacking or WitchAction.TakeDamage)
         {
             if (_animationPlayer.IsFinished)
@@ -143,13 +141,13 @@ public class Witch : IEntity, IPositioned, IHittable
                     Knockback = new Knockback
                     {
                         Direction = _lastNonZeroDirection,
-                        Distance = 100,
+                        Distance = 50,
                         Duration = 0.15f
                     }
                 },
                 team: Team.Friend,
                 bufferBetweenAttackSeconds: 0.08f,
-                distanceBetweenAttacksPixels: 25,
+                distanceBetweenAttacksPixels: 12,
                 shouldDespawnAfterAnimation: true
             )
         );

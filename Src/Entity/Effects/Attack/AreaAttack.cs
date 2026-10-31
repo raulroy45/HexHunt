@@ -8,7 +8,7 @@ namespace HexHunt.Entity.Effects.Attack;
 
 public class AreaAttack : IEntity, IDamageSource
 {
-    private const float Scale = 1.5f;
+    private const float Scale = 1f;
     private const int StartDamageFrame = 4;
     
     public ILifetime Lifetime { get; }
@@ -16,7 +16,7 @@ public class AreaAttack : IEntity, IDamageSource
     
     private readonly AnimationPlayer _animationPlayer;
     
-    private readonly Vector2 _position;
+    public Vector2 Position { get; }
     private readonly Vector2 _direction;
 
     public AreaAttack(
@@ -29,12 +29,12 @@ public class AreaAttack : IEntity, IDamageSource
         HashSet<IHittable>? hasHit = null
     )
     {
-        _position = position;
+        Position = position;
         _direction = direction;
         _animationPlayer = new AnimationPlayer();
         _animationPlayer.Play(attackObjectAnimation);
         Lifetime = new DelayedExpirationLifetime(() => shouldDespawnAfterAnimation && _animationPlayer.IsFinished);
-        DamageSource = new DamageSource(_position, Scale, 10, 10, damage, team, hasHit: hasHit);
+        DamageSource = new DamageSource(Position, Scale, 10, 10, damage, team, hasHit: hasHit);
     }
 
 
@@ -52,7 +52,7 @@ public class AreaAttack : IEntity, IDamageSource
     {
         _animationPlayer.Draw(
             spriteBatch,
-            _position,
+            Position,
             GetFacingFromDirection(_direction),
             Scale
         );

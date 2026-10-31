@@ -13,11 +13,12 @@ namespace HexHunt;
 
 public class HexHunt : Game, IEntitySpawner
 {
+    private const float WorldScale = 2f;
     private const float FrameDuration = 0.1f;
-    private int _boundaryMinX;
-    private int _boundaryMaxX;
-    private int _boundaryMinY;
-    private int _boundaryMaxY;
+    private float _boundaryMinX;
+    private float _boundaryMaxX;
+    private float _boundaryMinY;
+    private float _boundaryMaxY;
 
     private readonly List<IEntity> _entities = [];
     private readonly List<IEntity> _queuedSpawnEntities = [];
@@ -42,10 +43,10 @@ public class HexHunt : Game, IEntitySpawner
 
     protected override void Initialize()
     {
-        _boundaryMinX = GraphicsDevice.Viewport.Bounds.Left;
-        _boundaryMaxX = GraphicsDevice.Viewport.Bounds.Right;
-        _boundaryMinY = GraphicsDevice.Viewport.Bounds.Top;
-        _boundaryMaxY = GraphicsDevice.Viewport.Bounds.Bottom;
+        _boundaryMinX = GraphicsDevice.Viewport.Bounds.Left / WorldScale;
+        _boundaryMaxX = GraphicsDevice.Viewport.Bounds.Right / WorldScale;
+        _boundaryMinY = GraphicsDevice.Viewport.Bounds.Top / WorldScale;
+        _boundaryMaxY = GraphicsDevice.Viewport.Bounds.Bottom / WorldScale;
         
         base.Initialize();
     }
@@ -55,7 +56,9 @@ public class HexHunt : Game, IEntitySpawner
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _player = new Witch(
-            new Vector2(GraphicsDevice.Viewport.Width / 2f, GraphicsDevice.Viewport.Height / 2f),
+            new Vector2(
+                GraphicsDevice.Viewport.Width / (2f * WorldScale),
+                GraphicsDevice.Viewport.Height / (2f * WorldScale)),
             AnimationLoader.LoadAnimations(
                 Content,
                 ArtCatalogue.BlueWitch,
@@ -124,7 +127,7 @@ public class HexHunt : Game, IEntitySpawner
         var hittables = _entities.OfType<IHittable>().ToList();
         
         foreach (var entity in damageSources)
-            foreach (var hittable in hittables.Where(x => x.Team != entity.DamageSource.Team))
+            foreach (var hittable in hittables)
                 entity.DamageSource.TryHit(hittable);
     }
 
@@ -146,22 +149,26 @@ public class HexHunt : Game, IEntitySpawner
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        foreach (var entity in _entities)
+        _spriteBatch.Begin(
+            samplerState: SamplerState.PointClamp,
+            transformMatrix: Matrix.CreateScale(WorldScale)
+        );
+        foreach (var entity in _entities.OrderBy(e => e.Position.Y))
             entity.Draw(_spriteBatch);
-        if (_isDebugMode)
-        {
-            var hittables = _entities.OfType<IHittable>();
-            var activeDamageSources = _entities.OfType<IDamageSource>().Where(x => x.DamageSource.IsActive);
-            foreach (var entity in hittables)
-                _spriteBatch.Draw(_debugBox, entity.Hitbox.HitboxRectangle, Color.Red * 0.4f);
-            foreach (var entity in activeDamageSources)
-                _spriteBatch.Draw(_debugBox, entity.DamageSource.Hitbox.HitboxRectangle, Color.Yellow * 0.4f);
-        }
-
+        if (_isDebugMode) DrawDebuggingElements();
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    private void DrawDebuggingElements()
+    {
+        var hittables = _entities.OfType<IHittable>();
+        var activeDamageSources = _entities.OfType<IDamageSource>().Where(x => x.DamageSource.IsActive);
+        foreach (var entity in hittables)
+            _spriteBatch.Draw(_debugBox, entity.Hitbox.HitboxRectangle, Color.Red * 0.4f);
+        foreach (var entity in activeDamageSources)
+            _spriteBatch.Draw(_debugBox, entity.DamageSource.Hitbox.HitboxRectangle, Color.Yellow * 0.4f);
     }
 
     private static Vector2 GetDirection(KeyboardState keyboardState)

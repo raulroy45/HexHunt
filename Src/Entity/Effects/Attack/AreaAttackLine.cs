@@ -18,7 +18,7 @@ public class AreaAttackLine : IEntity
     private readonly bool _shouldDespawnAfterAnimation;
     private readonly Animation _areaAttackAnimation;
     private readonly Vector2 _direction;
-    private readonly Vector2 _position;
+    public Vector2 Position { get; }
     private float _totalTimeElapsed = 0f;
     private readonly List<AreaAttack> _spawnedAttacks = [];
     private readonly HashSet<IHittable> _hasHit;
@@ -39,7 +39,7 @@ public class AreaAttackLine : IEntity
     )
     {
         _entitySpawner = entitySpawner;
-        _position = position;
+        Position = position;
         
         if (direction != Vector2.Zero) direction.Normalize();
         _direction = direction;
@@ -85,7 +85,7 @@ public class AreaAttackLine : IEntity
     private AreaAttack CreateAreaAttackEntity()
     {
         return new AreaAttack(
-            _position + (_direction * _distanceBetweenAttacksPixels * (_spawnedAttacks.Count + 1)),
+            Position + (_direction * _distanceBetweenAttacksPixels * (_spawnedAttacks.Count + 1)),
             _direction,
             _areaAttackAnimation,
             _damage,
