@@ -1,148 +1,87 @@
 using HexHunt.Animations;
-using HexHunt.Content;
-using HexHunt.Entity.Effects.Attack;
-using HexHunt.Entity.Lifetime;
+using HexHunt.Entity.Attacks;
+using HexHunt.Entity.Combat;
+using HexHunt.Input;
+using HexHunt.World;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace HexHunt.Entity.Characters;
 
-public class Witch : IEntity, IHittable
+public class Witch(
+    Vector2 position,
+    AnimationSet<CharacterAction> animationSet,
+    AnimationSet<WitchEffect> effectAnimations,
+    IEntitySpawner entitySpawner)
+    : Character(position, animationSet, new HitPoints(20), new Hitbox(position, Scale, 2, 2), scale: Scale, delayDeathSeconds: 2)
 {
+    public override Team Team => Team.Friend;
+
     private const float Speed = 45f;
-    public Hitbox.Hitbox Hitbox { get; }
-    public Team Team => Team.Friend;
-    public ILifetime Lifetime { get; }
-    public Vector2 Position { get; private set; }
-
-    private readonly HitPoints _hitPoints = new(20);
-    
-    private readonly AnimationPlayer _animationPlayer;
-    private readonly AnimationSet<WitchAction> _animationSet;
-    private readonly AnimationSet<WitchEffect> _effectAnimations;
-
-    private Vector2 _lastAimDirection;
-    private WitchInput _input;
-    private WitchAction _witchAction = WitchAction.Idling;
-    private EntityFacing _entityFacing = EntityFacing.Right;
-
-    private readonly IEntitySpawner _entitySpawner;
     private const float Scale = 1f;
 
-    public Witch(
-        Vector2 position,
-        AnimationSet<WitchAction> animationSet,
-        AnimationSet<WitchEffect> effectAnimations,
-        IEntitySpawner entitySpawner
-    )
-    {
-        Position = position;
-        _lastAimDirection = Vector2.UnitX;
-        _animationPlayer = new AnimationPlayer();
-        _animationSet = animationSet;
-        _effectAnimations = effectAnimations;
-        _entitySpawner = entitySpawner;
-        Hitbox = new Hitbox.Hitbox(Position, Scale, 2, 2);
-        Lifetime = new DelayedExpirationLifetime(
-            () => _witchAction == WitchAction.Death && _animationPlayer.IsFinished,
-            2
-        );
+    private WitchInput _input;
+    private Vector2 _lastAimDirection = Vector2.UnitX;
 
-        SetState(WitchAction.Idling);
-    }
-    
-    public void Update(float elapsedTime)
+    protected override void UpdateBehaviors(float dt)
     {
-        if (_witchAction == WitchAction.Death) { }
-        // If attacking or taking damage, freeze the character so that the animation first finishes
-        else if (_witchAction is WitchAction.Attacking or WitchAction.TakeDamage)
+        if (Action is CharacterAction.Attacking)
         {
-            if (_animationPlayer.IsFinished)
-                SetState(WitchAction.Idling);
+            if (AnimationPlayer.IsFinished) SetState(CharacterAction.Idling);
         }
-        else
-        {
-            HandleInput(_input, elapsedTime);
-        }
-
-        _animationPlayer.Update(elapsedTime);
-        Hitbox.Update(Position);
-        Lifetime.Update(elapsedTime);
+        else HandleInput(_input, dt);
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    protected override void OnHurtFinished()
     {
-        _animationPlayer.Draw(
-            spriteBatch,
-            Position,
-            _entityFacing,
-            Scale
-        );
+        SetState(CharacterAction.Idling);
     }
 
     public void SetInput(WitchInput input)
     {
         _input = input;
     }
-    
-    public bool OnHit(Damage damage)
-    {
-        if (_hitPoints.IsDead) return false;
-        
-        _hitPoints.TakeDamage(damage.DamageAmount);
-        SetState(_hitPoints.IsDead ? WitchAction.Death : WitchAction.TakeDamage);
-        
-        return true;
-    }
-
-    private void SetState(WitchAction action)
-    {
-        _witchAction = action;
-        _animationPlayer.Play(_animationSet.Animations[_witchAction]);
-    }
 
     private void HandleInput(WitchInput input, float elapsedTime)
     {
         var aim = input.AimTarget - Position;
         if (aim != Vector2.Zero) _lastAimDirection = Vector2.Normalize(aim);
-        
+
         // Set state to either attacking, moving, or idling and if needed update position.
         if (input.AttackButtonPressed)
         {
-            SetState(WitchAction.Attacking);
+            SetState(CharacterAction.Attacking);
             SpawnAreaAttackLine(WitchEffect.IceSpike);
         }
         else
         {
             Position += input.MoveDirection * Speed * elapsedTime;
-            SetState(input.MoveDirection != Vector2.Zero ? WitchAction.Moving : WitchAction.Idling);
+            SetState(input.MoveDirection != Vector2.Zero ? CharacterAction.Moving : CharacterAction.Idling);
         }
 
         // Set orientation
-
         var directionFacingAdheres =
-            _witchAction == WitchAction.Attacking ? _lastAimDirection.X : input.MoveDirection.X;
-        
-        _entityFacing = directionFacingAdheres switch
+            Action == CharacterAction.Attacking ? _lastAimDirection.X : input.MoveDirection.X;
+
+        EntityFacing = directionFacingAdheres switch
         {
             < 0 => EntityFacing.Left,
             > 0 => EntityFacing.Right,
-            _ => _entityFacing
+            _ => EntityFacing
         };
     }
 
     private void SpawnAreaAttackLine(WitchEffect effect)
     {
-        _entitySpawner.Spawn(
+        entitySpawner.Spawn(
             new AreaAttackLine(
-                _entitySpawner,
-                Position,
-                _lastAimDirection,
-                _effectAnimations.Animations[effect],
-                4,
-                new Damage
+                entitySpawner: entitySpawner,
+                position: Position,
+                direction: _lastAimDirection,
+                areaAttackAnimation: effectAnimations.Animations[effect],
+                totalAttacks: 4,
+                damage: new Damage
                 {
-                    DamageAmount = 5, 
+                    DamageAmount = 5,
                     Knockback = new Knockback
                     {
                         Direction = _lastAimDirection,
@@ -152,8 +91,7 @@ public class Witch : IEntity, IHittable
                 },
                 team: Team.Friend,
                 bufferBetweenAttackSeconds: 0.08f,
-                distanceBetweenAttacksPixels: 12,
-                shouldDespawnAfterAnimation: true
+                distanceBetweenAttacksPixels: 12
             )
         );
     }

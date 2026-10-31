@@ -1,15 +1,13 @@
 using HexHunt.Animations;
-using HexHunt.Content;
-using HexHunt.Entity.Lifetime;
+using HexHunt.Entity.Characters;
+using HexHunt.Entity.Combat;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace HexHunt.Entity.Monsters;
 
-public class Rat : IEntity, IHittable, IDamageSource
+public class Rat : Character, IDamageSource
 {
-    public Hitbox.Hitbox Hitbox { get; }
-    public Team Team => Team.Foe;
+    public override Team Team => Team.Foe;
     public DamageSource DamageSource { get; }
     
     private const float Speed = 40f;
@@ -20,113 +18,77 @@ public class Rat : IEntity, IHittable, IDamageSource
     private const float DamageOffsetY = 4.5f;
     private const int AttackFrame = 8;
     
-    public Vector2 Position { get; private set; }
-    private EntityFacing _facing =  EntityFacing.Right;
-    private MonsterAction _currentState =  MonsterAction.Idling;
-    private float _freezeTimeLeft = 0;
-    private readonly HitPoints _hitPoints;
-
-    private readonly AnimationSet<MonsterAction> _animationSet;
-    private readonly AnimationPlayer _animationPlayer;
+    private float _freezeTimeLeft;
     private readonly IPositioned _targetPosition;
-    private readonly KnockbackMotion _knockbackMotion = new();
-
-    public Rat(Vector2 position, AnimationSet<MonsterAction> animationSet, IPositioned targetPosition)
-    {
-        Position = position;
-        _animationSet = animationSet;
-        _animationPlayer = new AnimationPlayer();
-        _animationPlayer.Play(animationSet.Animations[MonsterAction.Idling]);
-        _targetPosition = targetPosition;
-
-        Hitbox = new Hitbox.Hitbox(
-            Position,
+    
+    public Rat(
+        Vector2 position,
+        AnimationSet<CharacterAction> animationSet,
+        IPositioned targetPosition)
+        : base(position,
+            animationSet,
+            new HitPoints(10),
+            new Hitbox(position, Scale, 30, 30),
             Scale,
-            30,
-            30
-        );
-        _hitPoints = new HitPoints(10);
-
-        Lifetime = new DelayedExpirationLifetime(
-            () => _currentState == MonsterAction.Death && _animationPlayer.IsFinished, 0.75f);
-        
+            delayDeathSeconds: 0.75f)
+    {
+        _targetPosition = targetPosition;
         DamageSource = new DamageSource(
-            GetDamageSourcePosition(),
-            Scale, 
-            10, 
-            10, 
-            new Damage
+            position: GetDamageSourcePosition(),
+            scale: Scale,
+            width: 10,
+            height: 10,
+            damage: new Damage
             {
                 DamageAmount = 2
             },
-            team: Team.Foe,
-            isActive: false);
+            team: Team.Foe);
     }
 
-    public ILifetime Lifetime { get; }
-    
-    public void Update(float timeElapsed)
+    protected override void UpdateBehaviors(float dt)
     {
         var direction = GetDirection();
 
-        if (_currentState == MonsterAction.Death)
-        { } // Let the death animation play
-        else if (_currentState == MonsterAction.TakeDamage)
+        if (_freezeTimeLeft > 0)
         {
-            if (_animationPlayer.IsFinished)
+            _freezeTimeLeft -= dt;
+        }
+        else if (Action == CharacterAction.Attacking)
+        {
+            if (AnimationPlayer.CurrentFrameIndex >= AttackFrame) DamageSource.Activate();
+
+            if (AnimationPlayer.IsFinished)
             {
                 _freezeTimeLeft = FreezeSeconds;
-                SetState(MonsterAction.Idling);
+                SetState(CharacterAction.Idling);
             }
         }
-        else if (_freezeTimeLeft > 0)
-        {
-            _freezeTimeLeft -= timeElapsed;
-        } 
-        else if (_currentState == MonsterAction.Attacking)
-        {
-            if (_animationPlayer.CurrentFrameIndex >= AttackFrame)
-            {
-                DamageSource.Activate();
-            }
-            
-            if (_animationPlayer.IsFinished)
-            {
-                _freezeTimeLeft = FreezeSeconds;
-                SetState(MonsterAction.Idling);
-            }
-        } 
         else if (direction == Vector2.Zero)
         {
-            SetState(MonsterAction.Attacking);
+            SetState(CharacterAction.Attacking);
         }
         else
         {
-            Position += direction * Speed * timeElapsed;
-            SetState(MonsterAction.Running);
+            Position += direction * Speed * dt;
+            SetState(CharacterAction.Moving);
         }
 
         // Only switch face when running/chasing
-        if (_currentState == MonsterAction.Running)
-        {
-            _facing = (_targetPosition.Position.X - Position.X) switch
+        if (Action == CharacterAction.Moving)
+            EntityFacing = (_targetPosition.Position.X - Position.X) switch
             {
                 < 0 => EntityFacing.Left,
                 > 0 => EntityFacing.Right,
-                _ => _facing
+                _ => EntityFacing
             };
-        }
-        
-        Position += _knockbackMotion.Update(timeElapsed);
-        _animationPlayer.Update(timeElapsed);
+
         DamageSource.Update(GetDamageSourcePosition());
-        Hitbox.Update(Position);
-        Lifetime.Update(timeElapsed);
     }
-    
-    public void Draw(SpriteBatch spriteBatch)
+
+    protected override void OnHurtFinished()
     {
-        _animationPlayer.Draw(spriteBatch, Position, _facing, Scale);
+        _freezeTimeLeft = FreezeSeconds;
+        SetState(CharacterAction.Idling);
     }
 
     private Vector2 GetDirection()
@@ -138,37 +100,26 @@ public class Rat : IEntity, IHittable, IDamageSource
 
         if (direction != Vector2.Zero)
             direction.Normalize();
-        
+
         return direction;
     }
 
     private Vector2 GetDamageSourcePosition()
     {
-        return _facing == EntityFacing.Right
+        return EntityFacing == EntityFacing.Right
             ? new Vector2(Position.X + DamageOffsetX, Position.Y - DamageOffsetY)
             : new Vector2(Position.X - DamageOffsetX, Position.Y - DamageOffsetY);
     }
 
-    private void SetState(MonsterAction action)
+    protected override void SetState(CharacterAction nextAction)
     {
-        if (_currentState == MonsterAction.Attacking && action !=  MonsterAction.Attacking)
-        {
-            DamageSource.Deactivate();
-            DamageSource.ClearEarlierHits();
-        }
-        _currentState = action;
-        _animationPlayer.Play(_animationSet.Animations[action]);
-    }
+        var hasStartedAttacking = (Action != CharacterAction.Attacking || nextAction == CharacterAction.Attacking);
+        
+        base.SetState(nextAction);
 
-    public bool OnHit(Damage damage)
-    {
-        if (_hitPoints.IsDead) return false;
+        if (hasStartedAttacking) return;
         
-        _hitPoints.TakeDamage(damage.DamageAmount);
-        SetState(_hitPoints.IsDead ? MonsterAction.Death : MonsterAction.TakeDamage);
-        if (damage.Knockback is not null)
-            _knockbackMotion.Start(damage.Knockback);
-        
-        return true;
+        DamageSource.Deactivate();
+        DamageSource.ClearEarlierHits();
     }
 }

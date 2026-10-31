@@ -1,20 +1,21 @@
 using Microsoft.Xna.Framework;
 
-namespace HexHunt.Entity.Hitbox;
+namespace HexHunt.Entity.Combat;
 
 public class Hitbox
 {
-    public Rectangle HitboxRectangle { get; private set; }
-    private readonly float _scaledWidth;
     private readonly float _scaledHeight;
+    private readonly float _scaledWidth;
 
     public Hitbox(Vector2 position, float scale, float width, float height)
     {
         _scaledWidth = width * scale;
         _scaledHeight = height * scale;
-        
+
         Update(position);
     }
+
+    public Rectangle HitboxRectangle { get; private set; }
 
     public void Update(Vector2 position)
     {
@@ -28,6 +29,6 @@ public class Hitbox
 
     public bool IsHit(Hitbox other)
     {
-        return this.HitboxRectangle.Intersects(other.HitboxRectangle);
+        return HitboxRectangle.Intersects(other.HitboxRectangle);
     }
 }

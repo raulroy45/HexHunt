@@ -1,4 +1,4 @@
-namespace HexHunt.Entity;
+namespace HexHunt.Animations;
 
 public enum EntityFacing
 {

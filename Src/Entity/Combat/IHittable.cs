@@ -1,8 +1,8 @@
-namespace HexHunt.Entity;
+namespace HexHunt.Entity.Combat;
 
 public interface IHittable
 {
-    public Hitbox.Hitbox Hitbox { get; }
+    public Hitbox Hitbox { get; }
     public Team Team { get; }
     public bool OnHit(Damage damage);
 }

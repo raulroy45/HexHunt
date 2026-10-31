@@ -1,4 +1,4 @@
-namespace HexHunt.Entity;
+namespace HexHunt.Entity.Combat;
 
 public interface IDamageSource
 {

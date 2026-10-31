@@ -26,7 +26,7 @@ public class AnimationPlayer
     public void Update(float elapsedTime)
     {
         if (_currentAnimation == null) return;
-        
+
         _timerLeft -= elapsedTime;
         if (!(_timerLeft <= 0) || IsFinished) return;
 
@@ -48,7 +48,7 @@ public class AnimationPlayer
     public void Draw(SpriteBatch spriteBatch, Vector2 position, EntityFacing entityFacing, float scale)
     {
         if (_currentAnimation == null) return;
-        
+
         var origin = _currentAnimation.GetOrigin(entityFacing);
         var effects = entityFacing == EntityFacing.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 

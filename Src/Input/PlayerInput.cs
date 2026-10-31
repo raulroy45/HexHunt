@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace HexHunt.Entity.Characters;
+namespace HexHunt.Input;
 
 public struct WitchInput
 {

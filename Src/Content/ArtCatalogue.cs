@@ -15,21 +15,21 @@ public static class ArtCatalogue
         true
     );
 
-    public static readonly ArtSet<WitchAction> BlueWitch = new(
-        new Dictionary<WitchAction, SheetArt>
+    public static readonly ArtSet<CharacterAction> BlueWitch = new(
+        new Dictionary<CharacterAction, SheetArt>
         {
-            { WitchAction.Idling, BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_idle" } },
-            { WitchAction.Moving, BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_run" } },
+            { CharacterAction.Idling, BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_idle" } },
+            { CharacterAction.Moving, BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_run" } },
             {
-                WitchAction.Attacking,
+                CharacterAction.Attacking,
                 BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_attack", IsLooping = false }
             },
             {
-                WitchAction.TakeDamage,
+                CharacterAction.TakeDamage,
                 BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_take_damage", IsLooping = false }
             },
             {
-                WitchAction.Death,
+                CharacterAction.Death,
                 BlueWitchBase with { Path = "Characters/Blue Witch/B_witch_death", IsLooping = false }
             }
         }
@@ -37,19 +37,19 @@ public static class ArtCatalogue
 
     public static readonly ArtSet<WitchEffect> WitchEffects =
         new(new Dictionary<WitchEffect, SheetArt>
-        {
             {
-                WitchEffect.IceSpike, new SheetArt(
-                    "Effects/Magic/B_witch_ice_spike",
-                    19,
-                    38,
-                    new Vector2(4, 33),
-                    false
-                )
+                {
+                    WitchEffect.IceSpike, new SheetArt(
+                        "Effects/Magic/B_witch_ice_spike",
+                        19,
+                        38,
+                        new Vector2(4, 33),
+                        false
+                    )
+                }
             }
-        }
-    );
-    
+        );
+
     private static readonly SheetArt RatBase = new(
         "",
         70,
@@ -58,14 +58,14 @@ public static class ArtCatalogue
         true
     );
 
-    public static readonly ArtSet<MonsterAction> Rat = new(
-        new Dictionary<MonsterAction, SheetArt>
+    public static readonly ArtSet<CharacterAction> Rat = new(
+        new Dictionary<CharacterAction, SheetArt>
         {
-            { MonsterAction.Idling, RatBase with { Path = "Monsters/Rat/idle" } },
-            { MonsterAction.Running, RatBase with { Path = "Monsters/Rat/run" } },
-            { MonsterAction.Attacking, RatBase with { Path = "Monsters/Rat/attack_bite", IsLooping = false } },
-            { MonsterAction.TakeDamage, RatBase with { Path = "Monsters/Rat/hurt", IsLooping = false } },
-            { MonsterAction.Death, RatBase with { Path = "Monsters/Rat/death", IsLooping = false } }
+            { CharacterAction.Idling, RatBase with { Path = "Monsters/Rat/idle" } },
+            { CharacterAction.Moving, RatBase with { Path = "Monsters/Rat/run" } },
+            { CharacterAction.Attacking, RatBase with { Path = "Monsters/Rat/attack_bite", IsLooping = false } },
+            { CharacterAction.TakeDamage, RatBase with { Path = "Monsters/Rat/hurt", IsLooping = false } },
+            { CharacterAction.Death, RatBase with { Path = "Monsters/Rat/death", IsLooping = false } }
         }
     );
 }

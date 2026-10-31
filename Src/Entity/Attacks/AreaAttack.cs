@@ -1,22 +1,18 @@
 using System.Collections.Generic;
 using HexHunt.Animations;
+using HexHunt.Entity.Combat;
 using HexHunt.Entity.Lifetime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace HexHunt.Entity.Effects.Attack;
+namespace HexHunt.Entity.Attacks;
 
 public class AreaAttack : IEntity, IDamageSource
 {
     private const float Scale = 1f;
     private const int StartDamageFrame = 4;
-    
-    public ILifetime Lifetime { get; }
-    public DamageSource DamageSource { get; }
-    
+
     private readonly AnimationPlayer _animationPlayer;
-    
-    public Vector2 Position { get; }
     private readonly Vector2 _direction;
 
     public AreaAttack(
@@ -37,15 +33,21 @@ public class AreaAttack : IEntity, IDamageSource
         DamageSource = new DamageSource(Position, Scale, 10, 10, damage, team, hasHit: hasHit);
     }
 
+    public DamageSource DamageSource { get; }
 
-    public void Update(float elapsedTime)
+    public ILifetime Lifetime { get; }
+
+    public Vector2 Position { get; }
+
+
+    public void Update(float dt)
     {
-        _animationPlayer.Update(elapsedTime);
-        
+        _animationPlayer.Update(dt);
+
         if (_animationPlayer.CurrentFrameIndex >= StartDamageFrame)
             DamageSource.Activate();
-        
-        Lifetime.Update(elapsedTime);
+
+        Lifetime.Update(dt);
     }
 
     public void Draw(SpriteBatch spriteBatch)

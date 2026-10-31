@@ -7,8 +7,8 @@ public class DelayedExpirationLifetime(
     float delayExpirationSeconds = 0.2f
 ) : ILifetime
 {
-    public bool IsExpired { get; private set; } = false;
     private float _delayExpirationSecondsLeft = delayExpirationSeconds;
+    public bool IsExpired { get; private set; }
 
     public void Update(float elapsedTime)
     {

@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using HexHunt.Animations;
-using HexHunt.Entity;
 using HexHunt.Content;
+using HexHunt.Entity;
+using HexHunt.Entity.Combat;
 using HexHunt.Entity.Characters;
 using HexHunt.Entity.Monsters;
+using HexHunt.Input;
+using HexHunt.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,26 +19,26 @@ public class HexHunt : Game, IEntitySpawner
 {
     private const float WorldScale = 2f;
     private const float FrameDuration = 0.1f;
-    private float _boundaryMinX;
-    private float _boundaryMaxX;
-    private float _boundaryMinY;
-    private float _boundaryMaxY;
 
     private static readonly Matrix WorldMatrix = Matrix.CreateScale(WorldScale);
     private readonly List<IEntity> _entities = [];
-    private readonly List<IEntity> _queuedSpawnEntities = [];
     private readonly List<IEntity> _queuedDespawnEntities = [];
+    private readonly List<IEntity> _queuedSpawnEntities = [];
+    private float _boundaryMaxX;
+    private float _boundaryMaxY;
+    private float _boundaryMinX;
+    private float _boundaryMinY;
+
+    // debugging
+    private Texture2D _debugBox;
 
     private GraphicsDeviceManager _graphics;
+    private bool _isDebugMode;
 
     private Witch _player;
     private KeyboardState _previousKeyboardState;
     private MouseState _previousMouseState;
     private SpriteBatch _spriteBatch;
-    
-    // debugging
-    private Texture2D _debugBox;
-    private bool _isDebugMode = false;
 
     public HexHunt()
     {
@@ -44,13 +47,23 @@ public class HexHunt : Game, IEntitySpawner
         IsMouseVisible = true;
     }
 
+    public void Spawn(IEntity entity)
+    {
+        _queuedSpawnEntities.Add(entity);
+    }
+
+    public void Despawn(IEntity entity)
+    {
+        _queuedDespawnEntities.Add(entity);
+    }
+
     protected override void Initialize()
     {
         _boundaryMinX = GraphicsDevice.Viewport.Bounds.Left / WorldScale;
         _boundaryMaxX = GraphicsDevice.Viewport.Bounds.Right / WorldScale;
         _boundaryMinY = GraphicsDevice.Viewport.Bounds.Top / WorldScale;
         _boundaryMaxY = GraphicsDevice.Viewport.Bounds.Bottom / WorldScale;
-        
+
         base.Initialize();
     }
 
@@ -82,10 +95,10 @@ public class HexHunt : Game, IEntitySpawner
                 FrameDuration
             )
         );
-        
+
         _debugBox = new Texture2D(GraphicsDevice, 1, 1);
         _debugBox.SetData([Color.White]);
-        
+
         _entities.Add(_player);
     }
 
@@ -99,21 +112,22 @@ public class HexHunt : Game, IEntitySpawner
 
         if (WasJustClicked(mouseState, _previousMouseState))
             characterInput.AttackButtonPressed = true;
-        
+
         if (WasJustPressed(keyboardState, _previousKeyboardState, Keys.F1))
             _isDebugMode = !_isDebugMode;
 
-        (characterInput.MoveDirection, characterInput.AimTarget) = GetDirections(keyboardState, mouseState, _player.Position);
+        (characterInput.MoveDirection, characterInput.AimTarget) = GetDirections(keyboardState, mouseState);
         _player.SetInput(characterInput);
 
         HandleQueuedEntities();
         foreach (var entity in _entities)
         {
             entity.Update(elapsedTime);
-            
+
             // Despawn entity in the next update
             if (entity.Lifetime.IsExpired) Despawn(entity);
         }
+
         HandleCollisions();
 
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
@@ -129,17 +143,17 @@ public class HexHunt : Game, IEntitySpawner
     {
         var damageSources = _entities.OfType<IDamageSource>();
         var hittables = _entities.OfType<IHittable>().ToList();
-        
+
         foreach (var entity in damageSources)
-            foreach (var hittable in hittables)
-                entity.DamageSource.TryHit(hittable);
+        foreach (var hittable in hittables)
+            entity.DamageSource.TryHit(hittable);
     }
 
     private void HandleQueuedEntities()
     {
         _entities.RemoveAll(e => _queuedDespawnEntities.Contains(e));
         _entities.AddRange(_queuedSpawnEntities);
-        
+
         _queuedDespawnEntities.Clear();
         _queuedSpawnEntities.Clear();
     }
@@ -148,7 +162,7 @@ public class HexHunt : Game, IEntitySpawner
     {
         return currKeyboardState.IsKeyDown(key) && prevKeyboardState.IsKeyUp(key);
     }
-    
+
     private static bool WasJustClicked(MouseState currMouseState, MouseState prevMouseState)
     {
         return currMouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released;
@@ -180,7 +194,8 @@ public class HexHunt : Game, IEntitySpawner
             _spriteBatch.Draw(_debugBox, entity.DamageSource.Hitbox.HitboxRectangle, Color.Yellow * 0.4f);
     }
 
-    private static (Vector2 moveDirection, Vector2 aimTarget) GetDirections(KeyboardState keyboardState, MouseState mouseState, Vector2 playerPosition)
+    private static (Vector2 moveDirection, Vector2 aimTarget) GetDirections(KeyboardState keyboardState,
+        MouseState mouseState)
     {
         var moveDirection = Vector2.Zero;
         if (keyboardState.IsKeyDown(Keys.W))
@@ -201,8 +216,8 @@ public class HexHunt : Game, IEntitySpawner
         var aimTarget = Vector2.Transform(mouseState.Position.ToVector2(), Matrix.Invert(WorldMatrix));
         return (moveDirection, aimTarget);
     }
-    
-    private void SpawnMonsters(AnimationSet<MonsterAction> monsterAnimation)
+
+    private void SpawnMonsters(AnimationSet<CharacterAction> monsterAnimation)
     {
         var rand = new Random();
         var randomPosition = new Vector2(
@@ -210,15 +225,5 @@ public class HexHunt : Game, IEntitySpawner
             _boundaryMinY + (float)rand.NextDouble() * (_boundaryMaxY - _boundaryMinY)
         );
         Spawn(new Rat(randomPosition, monsterAnimation, _player));
-    }
-
-    public void Spawn(IEntity entity)
-    {
-        _queuedSpawnEntities.Add(entity);
-    }
-
-    public void Despawn(IEntity entity)
-    {
-        _queuedDespawnEntities.Add(entity);
     }
 }

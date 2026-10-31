@@ -1,6 +1,6 @@
 namespace HexHunt.Entity.Characters;
 
-public enum WitchAction
+public enum CharacterAction
 {
     Idling,
     Moving,
