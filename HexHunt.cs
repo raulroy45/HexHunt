@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HexHunt.Animations;
 using HexHunt.Content;
 using HexHunt.Entity;
 using HexHunt.Entity.Combat;
@@ -24,6 +23,7 @@ public class HexHunt : Game, IEntitySpawner
     private readonly List<IEntity> _entities = [];
     private readonly List<IEntity> _queuedDespawnEntities = [];
     private readonly List<IEntity> _queuedSpawnEntities = [];
+    
     private float _boundaryMaxX;
     private float _boundaryMaxY;
     private float _boundaryMinX;
@@ -39,6 +39,7 @@ public class HexHunt : Game, IEntitySpawner
     private KeyboardState _previousKeyboardState;
     private MouseState _previousMouseState;
     private SpriteBatch _spriteBatch;
+    private MonsterFactory _monsterFactory;
 
     public HexHunt()
     {
@@ -88,13 +89,8 @@ public class HexHunt : Game, IEntitySpawner
             this // Give reference to this Game's IEntitySpawner
         );
 
-        SpawnMonsters(
-            AnimationLoader.LoadAnimations(
-                Content,
-                ArtCatalogue.Rat,
-                FrameDuration
-            )
-        );
+        _monsterFactory = new MonsterFactory(Content, FrameDuration);
+        SpawnMonsters(MonsterCatalogue.Rat, 5);
 
         _debugBox = new Texture2D(GraphicsDevice, 1, 1);
         _debugBox.SetData([Color.White]);
@@ -217,13 +213,20 @@ public class HexHunt : Game, IEntitySpawner
         return (moveDirection, aimTarget);
     }
 
-    private void SpawnMonsters(AnimationSet<CharacterAction> monsterAnimation)
+    private void SpawnMonsters(
+        MonsterDefinition monsterDefinition,
+        int numberOfMonsters
+    )
     {
         var rand = new Random();
-        var randomPosition = new Vector2(
-            _boundaryMinX + (float)rand.NextDouble() * (_boundaryMaxX - _boundaryMinX),
-            _boundaryMinY + (float)rand.NextDouble() * (_boundaryMaxY - _boundaryMinY)
-        );
-        Spawn(new Rat(randomPosition, monsterAnimation, _player));
-    }
+        for (var i = 0; i < numberOfMonsters; i++)
+        {
+            var randomPosition = new Vector2(
+                _boundaryMinX + (float)rand.NextDouble() * (_boundaryMaxX - _boundaryMinX),
+                _boundaryMinY + (float)rand.NextDouble() * (_boundaryMaxY - _boundaryMinY)
+            );
+
+            Spawn(_monsterFactory.Create(monsterDefinition, randomPosition, _player));
+        }
+}
 }

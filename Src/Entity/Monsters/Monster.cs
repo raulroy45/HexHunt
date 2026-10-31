@@ -5,42 +5,42 @@ using Microsoft.Xna.Framework;
 
 namespace HexHunt.Entity.Monsters;
 
-public class Rat : Character, IDamageSource
+public class Monster : Character, IDamageSource
 {
     public override Team Team => Team.Foe;
     public DamageSource DamageSource { get; }
     
-    private const float Speed = 40f;
-    private const float FreezeSeconds = 0.75f;
-    private const int BiteRadiusPixels = 2;
-    private const float Scale = 0.5f;
-    private const float DamageOffsetX = 12.5f;
-    private const float DamageOffsetY = 4.5f;
-    private const int AttackFrame = 8;
-    
     private float _freezeTimeLeft;
     private readonly IPositioned _targetPosition;
-    
-    public Rat(
+    private readonly MonsterDefinition _monsterDefinition;
+
+    public Monster(
+        MonsterDefinition monsterDefinition,
         Vector2 position,
         AnimationSet<CharacterAction> animationSet,
         IPositioned targetPosition)
         : base(position,
             animationSet,
-            new HitPoints(10),
-            new Hitbox(position, Scale, 30, 30),
-            Scale,
-            delayDeathSeconds: 0.75f)
+            new HitPoints(monsterDefinition.HitPoints),
+            new Hitbox(
+                position,
+                monsterDefinition.Scale,
+                monsterDefinition.HitboxWidth,
+                monsterDefinition.HitboxHeight
+            ),
+            monsterDefinition.Scale,
+            delayDeathSeconds: monsterDefinition.DelayDeathSeconds)
     {
+        _monsterDefinition = monsterDefinition;
         _targetPosition = targetPosition;
         DamageSource = new DamageSource(
             position: GetDamageSourcePosition(),
-            scale: Scale,
-            width: 10,
-            height: 10,
+            scale: monsterDefinition.Scale,
+            width: monsterDefinition.BiteBoxWidth,
+            height: monsterDefinition.BiteBoxHeight,
             damage: new Damage
             {
-                DamageAmount = 2
+                DamageAmount = monsterDefinition.DamageAmount
             },
             team: Team.Foe);
     }
@@ -55,11 +55,11 @@ public class Rat : Character, IDamageSource
         }
         else if (Action == CharacterAction.Attacking)
         {
-            if (AnimationPlayer.CurrentFrameIndex >= AttackFrame) DamageSource.Activate();
+            if (AnimationPlayer.CurrentFrameIndex >= _monsterDefinition.AttackFrame) DamageSource.Activate();
 
             if (AnimationPlayer.IsFinished)
             {
-                _freezeTimeLeft = FreezeSeconds;
+                _freezeTimeLeft = _monsterDefinition.FreezeSeconds;
                 SetState(CharacterAction.Idling);
             }
         }
@@ -69,7 +69,7 @@ public class Rat : Character, IDamageSource
         }
         else
         {
-            Position += direction * Speed * dt;
+            Position += direction * _monsterDefinition.Speed * dt;
             SetState(CharacterAction.Moving);
         }
 
@@ -87,7 +87,7 @@ public class Rat : Character, IDamageSource
 
     protected override void OnHurtFinished()
     {
-        _freezeTimeLeft = FreezeSeconds;
+        _freezeTimeLeft = _monsterDefinition.FreezeSeconds;
         SetState(CharacterAction.Idling);
     }
 
@@ -95,7 +95,7 @@ public class Rat : Character, IDamageSource
     {
         var direction = _targetPosition.Position - GetDamageSourcePosition();
 
-        if (direction.Length() < BiteRadiusPixels)
+        if (direction.Length() < _monsterDefinition.AttackRadiusPixels)
             return Vector2.Zero;
 
         if (direction != Vector2.Zero)
@@ -106,18 +106,21 @@ public class Rat : Character, IDamageSource
 
     private Vector2 GetDamageSourcePosition()
     {
-        return EntityFacing == EntityFacing.Right
-            ? new Vector2(Position.X + DamageOffsetX, Position.Y - DamageOffsetY)
-            : new Vector2(Position.X - DamageOffsetX, Position.Y - DamageOffsetY);
+        var offset = _monsterDefinition.DamageSourceOffset * _monsterDefinition.Scale;
+
+        if (EntityFacing == EntityFacing.Left)
+            offset.X = -offset.X;
+
+        return Position + offset;
     }
 
     protected override void SetState(CharacterAction nextAction)
     {
-        var hasStartedAttacking = (Action != CharacterAction.Attacking || nextAction == CharacterAction.Attacking);
+        var isLeavingAttack = (Action == CharacterAction.Attacking && nextAction != CharacterAction.Attacking);
         
         base.SetState(nextAction);
 
-        if (hasStartedAttacking) return;
+        if (!isLeavingAttack) return;
         
         DamageSource.Deactivate();
         DamageSource.ClearEarlierHits();
