@@ -6,9 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace HexHunt.Content;
 
-public record AnimationSet<TKey>(IReadOnlyDictionary<TKey, Animation> Animations)
-    where TKey : struct, Enum;
-
 public static class AnimationLoader
 {
     public static AnimationSet<TKey> LoadAnimations<TKey>(

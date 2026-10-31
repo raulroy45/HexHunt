@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HexHunt.Animations;
 using HexHunt.Entity;
 using HexHunt.Content;
 using HexHunt.Entity.Characters;
@@ -20,6 +21,7 @@ public class HexHunt : Game, IEntitySpawner
     private float _boundaryMinY;
     private float _boundaryMaxY;
 
+    private static readonly Matrix WorldMatrix = Matrix.CreateScale(WorldScale);
     private readonly List<IEntity> _entities = [];
     private readonly List<IEntity> _queuedSpawnEntities = [];
     private readonly List<IEntity> _queuedDespawnEntities = [];
@@ -28,6 +30,7 @@ public class HexHunt : Game, IEntitySpawner
 
     private Witch _player;
     private KeyboardState _previousKeyboardState;
+    private MouseState _previousMouseState;
     private SpriteBatch _spriteBatch;
     
     // debugging
@@ -90,17 +93,17 @@ public class HexHunt : Game, IEntitySpawner
     {
         var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         var keyboardState = Keyboard.GetState();
+        var mouseState = Mouse.GetState();
 
         var characterInput = new WitchInput();
 
-        if (WasJustPressed(keyboardState, _previousKeyboardState, Keys.J))
+        if (WasJustClicked(mouseState, _previousMouseState))
             characterInput.AttackButtonPressed = true;
         
         if (WasJustPressed(keyboardState, _previousKeyboardState, Keys.F1))
             _isDebugMode = !_isDebugMode;
 
-        characterInput.Direction = GetDirection(keyboardState);
-
+        (characterInput.MoveDirection, characterInput.AimTarget) = GetDirections(keyboardState, mouseState, _player.Position);
         _player.SetInput(characterInput);
 
         HandleQueuedEntities();
@@ -119,6 +122,7 @@ public class HexHunt : Game, IEntitySpawner
 
         base.Update(gameTime);
         _previousKeyboardState = keyboardState;
+        _previousMouseState = mouseState;
     }
 
     private void HandleCollisions()
@@ -144,6 +148,11 @@ public class HexHunt : Game, IEntitySpawner
     {
         return currKeyboardState.IsKeyDown(key) && prevKeyboardState.IsKeyUp(key);
     }
+    
+    private static bool WasJustClicked(MouseState currMouseState, MouseState prevMouseState)
+    {
+        return currMouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released;
+    }
 
     protected override void Draw(GameTime gameTime)
     {
@@ -151,7 +160,7 @@ public class HexHunt : Game, IEntitySpawner
 
         _spriteBatch.Begin(
             samplerState: SamplerState.PointClamp,
-            transformMatrix: Matrix.CreateScale(WorldScale)
+            transformMatrix: WorldMatrix
         );
         foreach (var entity in _entities.OrderBy(e => e.Position.Y))
             entity.Draw(_spriteBatch);
@@ -171,25 +180,26 @@ public class HexHunt : Game, IEntitySpawner
             _spriteBatch.Draw(_debugBox, entity.DamageSource.Hitbox.HitboxRectangle, Color.Yellow * 0.4f);
     }
 
-    private static Vector2 GetDirection(KeyboardState keyboardState)
+    private static (Vector2 moveDirection, Vector2 aimTarget) GetDirections(KeyboardState keyboardState, MouseState mouseState, Vector2 playerPosition)
     {
-        var direction = Vector2.Zero;
+        var moveDirection = Vector2.Zero;
         if (keyboardState.IsKeyDown(Keys.W))
-            direction.Y -= 1f;
+            moveDirection.Y -= 1f;
 
         if (keyboardState.IsKeyDown(Keys.S))
-            direction.Y += 1f;
+            moveDirection.Y += 1f;
 
         if (keyboardState.IsKeyDown(Keys.A))
-            direction.X -= 1f;
+            moveDirection.X -= 1f;
 
         if (keyboardState.IsKeyDown(Keys.D))
-            direction.X += 1f;
+            moveDirection.X += 1f;
 
-        if (direction != Vector2.Zero)
-            direction.Normalize();
+        if (moveDirection != Vector2.Zero)
+            moveDirection.Normalize();
 
-        return direction;
+        var aimTarget = Vector2.Transform(mouseState.Position.ToVector2(), Matrix.Invert(WorldMatrix));
+        return (moveDirection, aimTarget);
     }
     
     private void SpawnMonsters(AnimationSet<MonsterAction> monsterAnimation)

@@ -21,7 +21,7 @@ public class Witch : IEntity, IHittable
     private readonly AnimationSet<WitchAction> _animationSet;
     private readonly AnimationSet<WitchEffect> _effectAnimations;
 
-    private Vector2 _lastNonZeroDirection;
+    private Vector2 _lastAimDirection;
     private WitchInput _input;
     private WitchAction _witchAction = WitchAction.Idling;
     private EntityFacing _entityFacing = EntityFacing.Right;
@@ -37,7 +37,7 @@ public class Witch : IEntity, IHittable
     )
     {
         Position = position;
-        _lastNonZeroDirection = Vector2.UnitX;
+        _lastAimDirection = Vector2.UnitX;
         _animationPlayer = new AnimationPlayer();
         _animationSet = animationSet;
         _effectAnimations = effectAnimations;
@@ -103,7 +103,8 @@ public class Witch : IEntity, IHittable
 
     private void HandleInput(WitchInput input, float elapsedTime)
     {
-        if (input.Direction != Vector2.Zero) _lastNonZeroDirection = input.Direction;
+        var aim = input.AimTarget - Position;
+        if (aim != Vector2.Zero) _lastAimDirection = Vector2.Normalize(aim);
         
         // Set state to either attacking, moving, or idling and if needed update position.
         if (input.AttackButtonPressed)
@@ -113,12 +114,16 @@ public class Witch : IEntity, IHittable
         }
         else
         {
-            Position += input.Direction * Speed * elapsedTime;
-            SetState(input.Direction != Vector2.Zero ? WitchAction.Moving : WitchAction.Idling);
+            Position += input.MoveDirection * Speed * elapsedTime;
+            SetState(input.MoveDirection != Vector2.Zero ? WitchAction.Moving : WitchAction.Idling);
         }
 
         // Set orientation
-        _entityFacing = input.Direction.X switch
+
+        var directionFacingAdheres =
+            _witchAction == WitchAction.Attacking ? _lastAimDirection.X : input.MoveDirection.X;
+        
+        _entityFacing = directionFacingAdheres switch
         {
             < 0 => EntityFacing.Left,
             > 0 => EntityFacing.Right,
@@ -132,7 +137,7 @@ public class Witch : IEntity, IHittable
             new AreaAttackLine(
                 _entitySpawner,
                 Position,
-                _lastNonZeroDirection,
+                _lastAimDirection,
                 _effectAnimations.Animations[effect],
                 4,
                 new Damage
@@ -140,7 +145,7 @@ public class Witch : IEntity, IHittable
                     DamageAmount = 5, 
                     Knockback = new Knockback
                     {
-                        Direction = _lastNonZeroDirection,
+                        Direction = _lastAimDirection,
                         Distance = 50,
                         Duration = 0.15f
                     }
